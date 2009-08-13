@@ -1,0 +1,41 @@
+\documentclass{article}
+\pagestyle{empty}
+
+\usepackage{tikz-timing}
+\usepackage{array}
+\usepackage{collcell}
+\usepackage{tabularx}
+
+\def\mymacro#1{% Simple test macro
+  '#1'
+}
+
+\makeatletter
+\newcolumntype{C}{>{\collect@cell\mymacro}c}
+\newcolumntype{T}{>{\collect@cell\texttiming}c}
+\makeatother
+
+\begin{document}
+  \bfseries
+
+\begin{tabular}{lC}
+    A &
+    {% Works cascaded if enclosed in { }
+    \begin{tabular}{|cTCT|}        \hline
+    U      & H & V \framebox{AB} C  & HLZ     \\
+    \LaTeX & L & \LaTeX & ZD{{ok}}Z \\
+    X      & Z & \hbox\bgroup Y\egroup      & LZHZL    \\ \hline
+    \end{tabular}} \\
+\end{tabular}
+
+\begin{tabularx}{10cm}{lX}
+    A &
+    {% Works cascaded if enclosed in { }
+    \begin{tabular}{|cTCT|}        \hline
+    U      & H & V \framebox{AB} C  & HLZ     \\
+    \LaTeX & L & \LaTeX & ZD{{ok}}Z \\
+    X      & Z & \hbox\bgroup Y\egroup      & LZHZL    \\ \hline
+    \end{tabular}} \\
+\end{tabularx}
+
+\end{document} 
