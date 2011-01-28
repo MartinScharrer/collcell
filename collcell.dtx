@@ -1,0 +1,218 @@
+% \iffalse meta-comment
+%
+% Copyright (C) 2011 by Martin Scharrer <martin@scharrer-online.de>
+% -----------------------------------------------------------------
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%
+%   http://www.latex-project.org/lppl.txt
+%
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008/05/04 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is Martin Scharrer.
+%
+% This work consists of the files collcell.dtx, collcell.ins
+% and the derived file collcell.sty.
+%
+% $Id: skeleton.dtx 1057 2009-05-04 11:11:37Z martin $
+% \fi
+%
+% \iffalse
+%<package>\ProvidesPackage{collcell}
+%<*driver>
+\ProvidesFile{collcell.dtx}
+%</driver>
+  [2011/01/28 v1.0 Collect the content of a tabular cell]
+%<*driver>
+\documentclass{ydoc}
+\GetFileInfo{\jobname.dtx}
+\usepackage{collcell}[\filedate]
+
+\EnableCrossrefs
+%\CodelineIndex
+\RecordChanges
+%\OnlyDescription
+\begin{document}
+  \DocInput{\jobname.dtx}
+  \PrintChanges
+  %\newpage\PrintIndex
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{0}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+%
+% \changes{v1.0}{2011/01/28}{First released version}
+%
+%
+% \DoNotIndex{\newcommand,\newenvironment,\def,\edef,\xdef,\DeclareRobustCommand}
+%
+% \GetFileInfo{\jobname.dtx}
+% \ifpdf
+% \hypersetup{%
+%   pdfauthor   = {Martin Scharrer <martin@scharrer-online.de>},
+%   pdftitle    = {The collcell package},
+%   pdfsubject  = {Documentation of LaTeX package collcell},
+%   pdfkeywords = {collcell, LaTeX, TeX}
+% }%
+% \fi
+% \clearpage
+% \null
+% \vspace*{-2em}
+% \begin{center}
+%   {\LARGE The \textsf{collcell} Package\\}
+%   {\large Martin Scharrer \\\normalsize 
+%   \url{martin@scharrer-online.de}\\[.8ex]
+%   \url{http://www.ctan.org/pkg/collcell/}\\[1.2ex]}
+%   {\large Version \fileversion\ -- \filedate}\\
+% \end{center}
+% \vspace{1.2em}%
+%
+% \section{Introduction}
+% This package ...
+%
+% \section{Usage}
+%
+% \StopEventually{}
+% \FloatBarrier
+% \clearpage
+% \iffalse
+%<*package>
+% \fi
+% \section{Implementation}
+%    \begin{macrocode}
+\newtoks\collect@cell@toks
+%    \end{macrocode}
+%
+% \begin{macro}{\endcollect@cell}
+%    \begin{macrocode}
+\def\endcollect@cell{\@gobble{endcollect@cell}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\collect@cell}
+%    \begin{macrocode}
+\def\collect@cell#1#2\ignorespaces{%
+  \collect@cell@toks{}%
+  \let\collect@cell@spaces\empty
+  \def\collect@cell@end{%
+    \expandafter\scantokens\expandafter
+    {\expandafter#1\expandafter{\the\collect@cell@toks}}%
+  }
+  \def\collect@cell@next{\collect@cell@look}%
+  \collect@cell@next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\collect@cell@look}
+%    \begin{macrocode}
+\def\collect@cell@look{%
+  \futurelet\collect@cell@lettoken\collect@cell@look@
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\collect@cell@eatspace}
+%    \begin{macrocode}
+\def\:{\collect@cell@eatspace}
+\expandafter\def\: {\collect@cell@look}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\collect@cell@look@}
+%    \begin{macrocode}
+\def\collect@cell@look@{%
+  \ifx\collect@cell@lettoken\@sptoken
+    \edef\collect@cell@spaces{\collect@cell@spaces\space}%
+    \def\collect@cell@next{\collect@cell@eatspace}%
+  \else
+    \ifx\collect@cell@lettoken\bgroup
+      \def\collect@cell@next{\collect@cell@group}%
+    \else
+      \def\collect@cell@next{\collect@cell@arg}%
+    \fi
+  \fi
+  \collect@cell@next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\collect@cell@group}
+%    \begin{macrocode}
+\def\collect@cell@group#1{%
+  \begingroup
+  \def\@tempa{#1}%
+  \def\@tempb{\bgroup}%
+  \ifx\@tempa\@tempb
+    \endgroup
+    \def\collect@cell@next{\collect@cell@arg\bgroup}%
+  \else
+    \endgroup
+    \def\collect@cell@next{\collect@cell@arg{{#1}}}%
+  \fi
+  \collect@cell@next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\collect@cell@addarg}
+%    \begin{macrocode}
+\def\collect@cell@addarg#1{%
+  \expandafter\expandafter\expandafter\collect@cell@toks
+  \expandafter\expandafter\expandafter
+  {\expandafter\the\expandafter\collect@cell@toks\collect@cell@spaces#1}%
+  \let\collect@cell@spaces\empty
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\collect@cell@arg}
+%    \begin{macrocode}
+\def\collect@cell@arg#1{%
+  \ifx\collect@cell@lettoken\\
+    \def\collect@cell@next{\collect@cell@end#1}%
+  \else
+    \ifx\collect@cell@lettoken\unskip
+      \def\collect@cell@next{%
+        \@ifnextchar\endcollect@cell
+          {\collect@cell@end#1}%
+          {\collect@cell@addarg{#1}\collect@cell@look}%
+      }%
+    \else
+      \collect@cell@addarg{#1}%
+      \def\collect@cell@next{\collect@cell@look}%
+    \fi
+  \fi
+  \collect@cell@next
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \Finale
+%</package>
+
