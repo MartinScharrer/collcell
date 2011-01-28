@@ -1,0 +1,24 @@
+%&pdflatex
+\documentclass{article}
+
+\usepackage{array}
+\usepackage{collcell}
+
+\begin{document}
+
+\def\notexpanded{EXPANDED}
+\def\mymacro{\fbox}
+\def\firstline{A&B&C\\}
+\begin{tabular}{lll}{l>{\collectcell\}l<{\endcollectcell}l}
+\relax\firstline
+&  \notexpanded & macro \\
+&  \relax\notexpanded & macro \\
+&  test & it \\
+&  again & yes \\
+% \relax\iftrue if \fi & if \\
+&  \relax\verb+\notexpanded+ & verbatim \\
+\end{tabular}
+
+\end{document}
+
+

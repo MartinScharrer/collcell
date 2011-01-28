@@ -97,7 +97,6 @@
 % \section{Usage}
 %
 % \StopEventually{}
-% \FloatBarrier
 % \clearpage
 % \iffalse
 %<*package>
@@ -107,15 +106,10 @@
 \newtoks\collect@cell@toks
 %    \end{macrocode}
 %
-% \begin{macro}{\endcollectcell}
-%    \begin{macrocode}
-\newcommand\endcollectcell{\@gobble{endcollectcell}}
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\collectcell}
 %    \begin{macrocode}
-\newcommand\collectcell#1#2\ignorespaces{%
+\newenvironment{collectcell}{}{}
+\def\collectcell#1#2\ignorespaces{%
   \collect@cell@toks{}%
   \let\collect@cell@spaces\empty
   \def\collect@cell@end{%
@@ -127,6 +121,14 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\endcollectcell}
+% Holds unique signature which will expand to nothing.
+%    \begin{macrocode}
+\def\endcollectcell{\@gobble{endcollectcell}}
+%    \end{macrocode}
+% \end{macro}
+%
 %
 % \begin{macro}{\collect@cell@look}
 %    \begin{macrocode}
