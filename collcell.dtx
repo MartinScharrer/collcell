@@ -107,15 +107,15 @@
 \newtoks\collect@cell@toks
 %    \end{macrocode}
 %
-% \begin{macro}{\endcollect@cell}
+% \begin{macro}{\endcollectcell}
 %    \begin{macrocode}
-\def\endcollect@cell{\@gobble{endcollect@cell}}
+\newcommand\endcollectcell{\@gobble{endcollectcell}}
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\collect@cell}
+% \begin{macro}{\collectcell}
 %    \begin{macrocode}
-\def\collect@cell#1#2\ignorespaces{%
+\newcommand\collectcell#1#2\ignorespaces{%
   \collect@cell@toks{}%
   \let\collect@cell@spaces\empty
   \def\collect@cell@end{%
@@ -198,7 +198,7 @@
   \else
     \ifx\collect@cell@lettoken\unskip
       \def\collect@cell@next{%
-        \@ifnextchar\endcollect@cell
+        \@ifnextchar\endcollectcell
           {\collect@cell@end#1}%
           {\collect@cell@addarg{#1}\collect@cell@look}%
       }%
