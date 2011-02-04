@@ -1,7 +1,7 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2011 by Martin Scharrer <martin@scharrer-online.de>
-% -----------------------------------------------------------------
+% Copyright (C) 2009-2011 by Martin Scharrer <martin@scharrer-online.de>
+% ----------------------------------------------------------------------
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3c
@@ -20,15 +20,15 @@
 % This work consists of the files collcell.dtx, collcell.ins
 % and the derived file collcell.sty.
 %
-% $Id: skeleton.dtx 1057 2009-05-04 11:11:37Z martin $
 % \fi
+%%^^A $Id$
 %
 % \iffalse
 %<package>\ProvidesPackage{collcell}
 %<*driver>
 \ProvidesFile{collcell.dtx}
 %</driver>
-  [2011/01/28 v1.0 Collect the content of a tabular cell]
+  [2011/02/04 v0.1 Collect the content of a tabular cell]
 %<*driver>
 \documentclass{ydoc}
 \GetFileInfo{\jobname.dtx}
@@ -65,7 +65,8 @@
 %   Right brace   \}     Tilde         \~}
 %
 %
-% \changes{v1.0}{2011/01/28}{First released version}
+% \changes{v0.0}{2009/08/13}{Created package}
+% \changes{v0.1}{2011/02/04}{First released version}
 %
 %
 % \DoNotIndex{\newcommand,\newenvironment,\def,\edef,\xdef,\DeclareRobustCommand}
@@ -83,18 +84,55 @@
 % \null
 % \vspace*{-2em}
 % \begin{center}
-%   {\LARGE The \textsf{collcell} Package\\}
-%   {\large Martin Scharrer \\\normalsize 
+%   {\LARGE The \textsf{collcell} Package\\[\medskipamount]}
+%   {\large Martin Scharrer \\[\medskipamount]\normalsize 
 %   \url{martin@scharrer-online.de}\\[.8ex]
-%   \url{http://www.ctan.org/pkg/collcell/}\\[1.2ex]}
+%   \url{http://www.ctan.org/pkg/collcell/}\\[\medskipamount]}
 %   {\large Version \fileversion\ -- \filedate}\\
 % \end{center}
 % \vspace{1.2em}%
 %
-% \section{Introduction}
-% This package ...
+% \begin{abstract}
+% This small package provides macros which collect the cell content of a tabular
+% and provide it to a macro as argument. It was inspired by the |\collect@body|
+% macro defined by the \pkg{amsmath} or the \pkg{environ} package, which can be used
+% to collect the body of an environment. Special care is taken to remove all aligning
+% macros inserted by tabular from the cell content. The macros also work in the last
+% column of a table. They do not support verbatim material inside the cells.
+% \end{abstract}
 %
 % \section{Usage}
+% This package provides the macros \Macro\collectcell and \Macro\endcollectcell
+% which are supposed to be used with the |>{ }| and |<{ }| tabular column declarations of
+% the \pkg{array} package. This can be done either in the argument of tabular or using
+% \Macro\newcolumntype.
+%
+% The following code defines a `|E|' column which passes the contents of its cell
+% to \Macro\usermacro as an argument. The macro can the process the content as usual.
+%
+% \par\bigskip
+% \noindent
+% |% Preamble:|\\
+% |\usepackage{array}|\\
+% |\usepackage{collcell}|\\
+% |% Preamble or document:|\\
+% |\newcolumntype{E}{>{\collectmacro\usermacro}c<{\endcollectmacro}}|\\
+% ||\\
+% |% Document:|\\
+% |\begin{tabular}{lE}|\\
+% |   A & Example \\ % Same as \usermacro{Example} |\\ 
+% |   B & Text    \\ % Same as \usermacro{Text}    |\\
+% |\end{tabular}|\\
+% \par\medskip
+%
+% For example \Macro\usermacro could be \Macro\fbox and wrap the cell content in a frame box.
+% More complicated macros are also supported as long they take one argument. This package
+% was originally programmed to be used with the \Macro\tikztiming macro of the \pkg{tikz-timing} package.
+% This macro takes some complex user input and draws a timing diagram from it
+%
+% Note that if such a cell contains a tabular environment by itself, the environment must be wrapped
+% in braces `|{ }|' to ensure proper operation.
+%
 %
 % \StopEventually{}
 % \clearpage
@@ -216,5 +254,7 @@
 %
 %
 % \Finale
+% \iffalse
 %</package>
+% \fi
 
