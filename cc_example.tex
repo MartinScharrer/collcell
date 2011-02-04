@@ -11,8 +11,8 @@
 }
 
 \makeatletter
-\newcolumntype{C}{>{\collect@cell\mymacro}c<{\endcollect@cell}}
-\newcolumntype{T}{>{\collect@cell\texttiming}c<{\endcollect@cell}}
+\newcolumntype{C}{>{\collectcell\mymacro}c<{\endcollectcell}}
+\newcolumntype{T}{>{\collectcell\texttiming}c<{\endcollectcell}}
 \makeatother
 
 \begin{document}
@@ -21,8 +21,8 @@
 \begin{tabular}{lC}
     A &
     {% Works cascaded if enclosed in { }
-    \begin{tabular}{|cTCTC|}        \hline
-    U \relax A      & H & V \framebox{AB} C  & HLZ   & A   \\
+    \begin{tabular}{|cTCT|}        \hline
+    U \relax A      & H & V \framebox{AB} C  & HLZ     \\
     \LaTeX & L & \LaTeX & ZD{{ok}}Z \\
     X \unskip Y     & Z & \hbox\bgroup Y\egroup      & LZHZL    \\ \hline
     \end{tabular}} \\

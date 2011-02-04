@@ -178,8 +178,10 @@
 %
 % \begin{macro}{\collect@cell@eatspace}
 %    \begin{macrocode}
+\begingroup
 \def\:{\collect@cell@eatspace}
-\expandafter\def\: {\collect@cell@look}
+\expandafter\gdef\: {\collect@cell@look}
+\endgroup
 %    \end{macrocode}
 % \end{macro}
 %
