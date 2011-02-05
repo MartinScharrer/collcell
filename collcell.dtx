@@ -153,7 +153,7 @@
   \def\collect@cell@end{%
     \expandafter\scantokens\expandafter
     {\expandafter#1\expandafter{\the\collect@cell@toks}}%
-  }
+  }%
   \def\collect@cell@next{\collect@cell@look}%
   \collect@cell@next
 }
@@ -235,7 +235,7 @@
 % \begin{macro}{\collect@cell@arg}
 %    \begin{macrocode}
 \def\collect@cell@arg#1{%
-  \ifx\collect@cell@lettoken\\
+  \ifx\collect@cell@lettoken\\%
     \def\collect@cell@next{\collect@cell@end#1}%
   \else
     \ifx\collect@cell@lettoken\unskip
