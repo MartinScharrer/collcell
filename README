@@ -2,7 +2,7 @@ The collcell Package
 --------------------
 Copyright (C) 2009-2011 by Martin Scharrer <martin@scharrer-online.de>
 http://www.ctan.org/pkg/collcell/
-Version v0.1 -- 2011/02/04
+Version v0.1a -- 2011/02/05
 
 This small package provides macros which collect the cell content of
 a tabular and provide it to a macro as argument. It was inspired by the
