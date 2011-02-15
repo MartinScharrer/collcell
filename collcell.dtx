@@ -285,20 +285,10 @@
 % and the rest of the cell is processed.
 %    \begin{macrocode}
 \def\collect@cell@arg#1{%
-\def\A{#1}%
-  \message{^^J\meaning\A}%
-  \ifx\collect@cell@lettoken\\%
-    \def\collect@cell@next{\collect@cell@end\tracingall#1}%
+  \in@{#1}{\\\endtabular\endarray}%
+  \ifin@
+    \def\collect@cell@next{\collect@cell@end#1}%
   \else
-    \ifx\collect@cell@lettoken\endtabular
-        \def\collect@cell@next{\collect@cell@end#1}%
-    \else
-    \ifx\collect@cell@lettoken\endtabularx
-        \def\collect@cell@next{\collect@cell@end#1}%
-    \else
-    \ifx\collect@cell@lettoken\endarray
-        \def\collect@cell@next{\collect@cell@end#1}%
-    \else
     \ifx\collect@cell@lettoken\end
         \def\collect@cell@next{\collect@cell@checkend}%
     \else
@@ -317,12 +307,7 @@
       \fi
     \fi
     \fi
-    \fi
-    \fi
-    \fi
   \fi
-  \message{^^J\meaning
-  \collect@cell@next}%
   \collect@cell@next
 }
 %    \end{macrocode}
