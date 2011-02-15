@@ -145,19 +145,25 @@
 \newtoks\collect@cell@toks
 %    \end{macrocode}
 %
-% \begin{macro}{\collectcell}
+% \begin{macro}{\collectcell}[2]{user macro(s)}{ignored tokens, possible empty}
 %    \begin{macrocode}
 \newenvironment{collectcell}{}{}
 \def\collectcell#1#2\ignorespaces{%
   \collect@cell@toks{}%
   \let\collect@cell@spaces\empty
   \def\collect@cell@end{%
-    \expandafter\scantokens\expandafter
-    {\expandafter#1\expandafter{\the\collect@cell@toks}}%
+    \expandafter\ccell@swap\expandafter{\the\collect@cell@toks}{#1}%
   }%
   \def\collect@cell@next{\collect@cell@look}%
   \collect@cell@next
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ccell@swap}
+% Swaps the two arguments. The second one (user macro(s)) is added without braces.
+%    \begin{macrocode}
+\def\ccell@swap#1#2{#2{#1}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -233,21 +239,52 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\collect@cell@checkend}
+%    \begin{macrocode}
+\def\collect@cell@checkend#1{%
+  \begingroup
+  \def\@tempa{#1}%
+  \ifx\@tempa\@currenvir
+    \endgroup
+    \def\collect@cell@next{\collect@cell@end\end{#1}}%
+  \else
+    \endgroup
+    \collect@cell@addarg{\end{#1}}%
+    \def\collect@cell@next{\collect@cell@look}%
+  \fi
+  \collect@cell@next
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\collect@cell@arg}
+% Handles the arguments.
+% The first token of the argument is still in the |lettoken| macro which is compared
+% against a list of possible end tokens.
+% Then either the cell end is handled or the argument is added to the token register
+% and the rest of the cell is processed.
 %    \begin{macrocode}
 \def\collect@cell@arg#1{%
   \ifx\collect@cell@lettoken\\%
     \def\collect@cell@next{\collect@cell@end#1}%
   \else
-    \ifx\collect@cell@lettoken\unskip
-      \def\collect@cell@next{%
-        \@ifnextchar\endcollectcell
-          {\collect@cell@end#1}%
-          {\collect@cell@addarg{#1}\collect@cell@look}%
-      }%
+    \ifx\collect@cell@lettoken\endtabular%
+        \def\collect@cell@next{\collect@cell@end#1}%
     \else
-      \collect@cell@addarg{#1}%
-      \def\collect@cell@next{\collect@cell@look}%
+    \ifx\collect@cell@lettoken\end
+        \def\collect@cell@next{\collect@cell@checkend}%
+    \else
+      \ifx\collect@cell@lettoken\unskip
+        \def\collect@cell@next{%
+            \@ifnextchar\endcollectcell
+            {\collect@cell@end#1}%
+            {\collect@cell@addarg{#1}\collect@cell@look}%
+        }%
+      \else
+        \collect@cell@addarg{#1}%
+        \def\collect@cell@next{\collect@cell@look}%
+      \fi
+    \fi
     \fi
   \fi
   \collect@cell@next

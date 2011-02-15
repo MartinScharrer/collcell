@@ -10,13 +10,52 @@
   '#1'
 }
 
+\newtoks\mytoks
 \makeatletter
 \newcolumntype{C}{>{\collectcell\mymacro}c<{\endcollectcell}}
 \newcolumntype{T}{>{\collectcell\texttiming}c<{\endcollectcell}}
+\newcolumntype{F}{>{\collectcell{\color{blue}\fbox}}c<{\endcollectcell}}
+\newcolumntype{S}{>{\collectcell{\global\mytoks}}c<{\endcollectcell\the\mytoks}}
+\newcolumntype{R}{c<{\the\mytoks}}
+\def\savedcell{}
 \makeatother
 
 \begin{document}
   \bfseries
+
+\begin{tabular}{S|FF|R}
+    Nuts   & B & C &\\
+    Screws & B & C &\\
+\end{tabular}
+
+\newenvironment{foo}{}{}
+\begin{tabular}{FFF}
+    A & B & C \\
+    A & B\relax{} $_\alpha$ a~b\unskip t & C \\
+    A & B & \begin{foo}C\end{foo}
+\end{tabular}
+
+\tabular{FFF}
+    A & B & C \\
+    A & B\relax{} $_\alpha$ a~b\unskip t & C \\
+    A & B & \begin{foo}C\end{foo}
+\endtabular
+
+\newenvironment{Tabular}{\tabular}{\endtabular}
+\begin{Tabular}{FFF}
+    A & B & C \\
+    A & B\relax{} $_\alpha$ a~b\unskip t & C \\
+    A & B & \begin{foo}C\end{foo}
+\end{Tabular}
+
+
+
+\begin{tabularx}{\linewidth}{FFF}
+    A & B & C \\
+    A & B\relax{} $_\alpha$ a~b\unskip t & C \\
+    A & B & C \\
+\end{tabularx}
+
 
 \begin{tabular}{lC}
     A &
