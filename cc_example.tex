@@ -12,9 +12,11 @@
 
 \newtoks\mytoks
 \makeatletter
+\def\mfbox#1{\ensuremath{\fbox{#1}}}%
 \newcolumntype{C}{>{\collectcell\mymacro}c<{\endcollectcell}}
 \newcolumntype{T}{>{\collectcell\texttiming}c<{\endcollectcell}}
 \newcolumntype{F}{>{\collectcell{\color{blue}\fbox}}c<{\endcollectcell}}
+\newcolumntype{M}{>{\collectcell{\mfbox}}c<{\endcollectcell}}
 \newcolumntype{S}{>{\collectcell{\global\mytoks}}c<{\endcollectcell\the\mytoks}}
 \newcolumntype{R}{c<{\the\mytoks}}
 \def\savedcell{}
@@ -23,10 +25,8 @@
 \begin{document}
   \bfseries
 
-  \def\gobble#1{\message{\string#1}}
-  \let\Bgroup\bgroup
 \begin{tabular}{S|FF|R}
-    Nuts   & B \texttt{\strut A} \Bgroup  & C &\\
+    Nuts   & B \texttt{\strut A} & C &\\
     Screws & B & C &\\
 \end{tabular}
 
@@ -47,10 +47,17 @@
 \begin{Tabular}{FFF}
     A & B & C \\
     A & B\relax{} $_\alpha$ a~b\unskip t & C \\
-    A & B & \begin{foo}C\end{foo}
+    A & B & \begin{foo}C\end{foo} 
 \end{Tabular}
 
 
+\[
+\begin{array}{MMM}
+    A & B & C \\
+    A & t & C \\
+    A & B & Cx
+\end{array}
+\]
 
 \begin{tabularx}{\linewidth}{FFF}
     A & B & C \\
@@ -58,7 +65,14 @@
     A & B & C \\
 \end{tabularx}
 
+\begin{tabularx}{\linewidth}{FFF}
+    A & B & C \\
+    A & t & C \\
+    A & B & Cx
+\end{tabularx}
 
+
+\end{document} 
 \begin{tabular}{lC}
     A &
     {% Works cascaded if enclosed in { }
@@ -69,6 +83,7 @@
     \end{tabular}} \\
 \end{tabular}
 
+\end{document} 
 \begin{tabularx}{10cm}{lX}
     A &
     {% Works cascaded if enclosed in { }

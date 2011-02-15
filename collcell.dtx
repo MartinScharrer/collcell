@@ -218,12 +218,12 @@
   \def\@tempb{\bgroup}%
   \ifx\@tempa\@tempb
     \endgroup
-    \def\collect@cell@next{\collect@cell@addarg{#1}\collect@cell@look}%
+    \collect@cell@addarg{#1}%
   \else
     \endgroup
-    \def\collect@cell@next{\collect@cell@addarg{{#1}}\collect@cell@look}%
+    \collect@cell@addarg{{#1}}%
   \fi
-  \collect@cell@next
+  \collect@cell@look
 }
 %    \end{macrocode}
 % \end{macro}
@@ -235,6 +235,26 @@
   \expandafter\expandafter\expandafter
   {\expandafter\the\expandafter\collect@cell@toks\collect@cell@spaces#1}%
   \let\collect@cell@spaces\empty
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\collect@cell@checkcsname}
+% For support of |\end{tabularx}| without trailing |\\|.
+%    \begin{macrocode}
+\def\collect@cell@checkcsname#1\endcsname{%
+  \begingroup
+  \def\@tempa{#1}%
+  \def\@tempb{endtabular*}%
+  \ifx\@tempa\@tempb
+    \endgroup
+    \def\collect@cell@next{\collect@cell@end\csname#1\endcsname}%
+  \else
+    \endgroup
+    \collect@cell@addarg{\csname#1\endcsname}%
+    \def\collect@cell@next{\collect@cell@look}%
+  \fi
+  \collect@cell@next
 }
 %    \end{macrocode}
 % \end{macro}
@@ -265,14 +285,25 @@
 % and the rest of the cell is processed.
 %    \begin{macrocode}
 \def\collect@cell@arg#1{%
+\def\A{#1}%
+  \message{^^J\meaning\A}%
   \ifx\collect@cell@lettoken\\%
-    \def\collect@cell@next{\collect@cell@end#1}%
+    \def\collect@cell@next{\collect@cell@end\tracingall#1}%
   \else
-    \ifx\collect@cell@lettoken\endtabular%
+    \ifx\collect@cell@lettoken\endtabular
+        \def\collect@cell@next{\collect@cell@end#1}%
+    \else
+    \ifx\collect@cell@lettoken\endtabularx
+        \def\collect@cell@next{\collect@cell@end#1}%
+    \else
+    \ifx\collect@cell@lettoken\endarray
         \def\collect@cell@next{\collect@cell@end#1}%
     \else
     \ifx\collect@cell@lettoken\end
         \def\collect@cell@next{\collect@cell@checkend}%
+    \else
+    \ifx\collect@cell@lettoken\csname
+        \def\collect@cell@next{\collect@cell@checkcsname}%
     \else
       \ifx\collect@cell@lettoken\unskip
         \def\collect@cell@next{%
@@ -286,7 +317,12 @@
       \fi
     \fi
     \fi
+    \fi
+    \fi
+    \fi
   \fi
+  \message{^^J\meaning
+  \collect@cell@next}%
   \collect@cell@next
 }
 %    \end{macrocode}
