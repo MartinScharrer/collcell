@@ -218,10 +218,10 @@
   \def\@tempb{\bgroup}%
   \ifx\@tempa\@tempb
     \endgroup
-    \def\collect@cell@next{\collect@cell@arg\bgroup}%
+    \def\collect@cell@next{\collect@cell@addarg{#1}\collect@cell@look}%
   \else
     \endgroup
-    \def\collect@cell@next{\collect@cell@arg{{#1}}}%
+    \def\collect@cell@next{\collect@cell@addarg{{#1}}\collect@cell@look}%
   \fi
   \collect@cell@next
 }

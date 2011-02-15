@@ -23,8 +23,10 @@
 \begin{document}
   \bfseries
 
+  \def\gobble#1{\message{\string#1}}
+  \let\Bgroup\bgroup
 \begin{tabular}{S|FF|R}
-    Nuts   & B & C &\\
+    Nuts   & B \texttt{\strut A} \Bgroup  & C &\\
     Screws & B & C &\\
 \end{tabular}
 
