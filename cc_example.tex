@@ -15,15 +15,33 @@
 \def\mfbox#1{\ensuremath{\fbox{#1}}}%
 \newcolumntype{C}{>{\collectcell\mymacro}c<{\endcollectcell}}
 \newcolumntype{T}{>{\collectcell\texttiming}c<{\endcollectcell}}
-\newcolumntype{F}{>{\collectcell{\color{blue}\fbox}}c<{\endcollectcell}}
+\newcolumntype{F}{>{\tracingall\collectcell{\color{blue}\fbox}}c<{\endcollectcell}}
 \newcolumntype{M}{>{\collectcell{\mfbox}}c<{\endcollectcell}}
 \newcolumntype{S}{>{\collectcell{\global\mytoks}}c<{\endcollectcell\the\mytoks}}
 \newcolumntype{R}{c<{\the\mytoks}}
+\newcolumntype{D}{>{\showme}l}
 \def\savedcell{}
+\makeatother
+
+\def\showme#1\ignorespaces#2#3#4#5{\show#4\show#5}
+
+\usepackage{tabularx}
+\makeatletter
+\let\verb\TX@verb
 \makeatother
 
 \begin{document}
   \bfseries
+\def\gobble#1{#1}
+
+\begin{tabular}{FFF}
+  test & \relax \\
+%  test & \relax\empty\\
+\end{tabular}
+
+\ignorespaces
+
+\end{document}
 
 \begin{tabular}{S|FF|R}
     Nuts   & B \texttt{\strut A} & C &\\
@@ -32,7 +50,7 @@
 
 \newenvironment{foo}{}{}
 \begin{tabular}{FFF}
-    A & B & C \\
+    A  B  C \space & B & C \\
     A & B\relax{} $_\alpha$ a~b\unskip t & C \\
     A & B & \begin{foo}C\end{foo}
 \end{tabular}
