@@ -195,16 +195,18 @@
 % \begin{macro}{\collect@cell@look@}
 %    \begin{macrocode}
 \def\collect@cell@look@{%
-  \ifx\collect@cell@lettoken\@sptoken
+  \cc@iftoken\@sptoken
+  {%
     \edef\collect@cell@spaces{\collect@cell@spaces\space}%
     \def\collect@cell@next{\collect@cell@eatspace}%
-  \else
-    \ifx\collect@cell@lettoken\bgroup
+  }{%
+    \cc@iftoken\@sptoken
+    {%
       \def\collect@cell@next{\collect@cell@group}%
-    \else
+    }{%
       \def\collect@cell@next{\collect@cell@arg}%
-    \fi
-  \fi
+    }%
+  }%
   \collect@cell@next
 }
 %    \end{macrocode}
@@ -284,31 +286,40 @@
 % Then either the cell end is handled or the argument is added to the token register
 % and the rest of the cell is processed.
 %    \begin{macrocode}
+\def\cc@iftoken#1{%
+  \ifx\collect@cell@lettoken#1
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+
 \def\collect@cell@arg#1{%
   \in@{#1}{\\\endtabular\endarray}%
   \ifin@
-    \def\collect@cell@next{\collect@cell@end#1}%
+     \expandafter\@firstoftwo
   \else
-    \ifx\collect@cell@lettoken\end
-        \def\collect@cell@next{\collect@cell@checkend}%
-    \else
-    \ifx\collect@cell@lettoken\csname
-        \def\collect@cell@next{\collect@cell@checkcsname}%
-    \else
-      \ifx\collect@cell@lettoken\unskip
-        \def\collect@cell@next{%
-            \@ifnextchar\endcollectcell
-            {\collect@cell@end#1}%
-            {\collect@cell@addarg{#1}\collect@cell@look}%
-        }%
-      \else
-        \collect@cell@addarg{#1}%
-        \def\collect@cell@next{\collect@cell@look}%
-      \fi
-    \fi
-    \fi
+     \expandafter\@secondoftwo
   \fi
-  \collect@cell@next
+    {\collect@cell@end#1}%
+    {%
+        \cc@iftoken\end
+        {\collect@cell@checkend}%
+        {\cc@iftoken\csname
+            {\collect@cell@checkcsname}%
+            {\cc@iftoken\unskip%
+                {%
+                    \@ifnextchar\endcollectcell
+                    {\collect@cell@end#1}%
+                    {\collect@cell@addarg{#1}\collect@cell@look}%
+                }%
+                {%
+                    \collect@cell@addarg{#1}%
+                    \collect@cell@look
+                }%
+            }%
+        }%
+    }%
 }
 %    \end{macrocode}
 % \end{macro}

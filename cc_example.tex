@@ -7,7 +7,7 @@
 \usepackage{tabularx}
 
 \def\mymacro#1{% Simple test macro
-  '#1'
+  [#1)
 }
 
 \newtoks\mytoks
@@ -15,31 +15,31 @@
 \def\mfbox#1{\ensuremath{\fbox{#1}}}%
 \newcolumntype{C}{>{\collectcell\mymacro}c<{\endcollectcell}}
 \newcolumntype{T}{>{\collectcell\texttiming}c<{\endcollectcell}}
-\newcolumntype{F}{>{\tracingall\collectcell{\color{blue}\fbox}}c<{\endcollectcell}}
+\newcolumntype{F}{>{\collectcell{\color{blue}\fbox}}c<{\endcollectcell}}
 \newcolumntype{M}{>{\collectcell{\mfbox}}c<{\endcollectcell}}
 \newcolumntype{S}{>{\collectcell{\global\mytoks}}c<{\endcollectcell\the\mytoks}}
 \newcolumntype{R}{c<{\the\mytoks}}
-\newcolumntype{D}{>{\showme}l}
 \def\savedcell{}
 \makeatother
 
-\def\showme#1\ignorespaces#2#3#4#5{\show#4\show#5}
+\def\showme#1\ignorespaces#2#3#4#5{\show#2\show#3\show#4\show#5}
 
 \usepackage{tabularx}
 \makeatletter
-\let\verb\TX@verb
+\usepackage{etoolbox}
+\robustify\@arraycr
 \makeatother
 
 \begin{document}
   \bfseries
-\def\gobble#1{#1}
 
-\begin{tabular}{FFF}
-  test & \relax \\
+ 
+abc%
+\begin{tabular}{C}
+    \empty\empty  \\
 %  test & \relax\empty\\
-\end{tabular}
-
-\ignorespaces
+\end{tabular}%
+test
 
 \end{document}
 
