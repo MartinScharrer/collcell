@@ -141,6 +141,40 @@
 %<*package>
 % \fi
 % \section{Implementation}
+%
+%    \begin{macrocode}
+\RequirePackage{array}
+\let\collcell@beforeuser\empty
+\let\collcell@afteruser\empty
+
+\newif\if@collcell@verb
+\newif\if@collcell@robustcr
+%    \end{macrocode}
+%
+% \subsection{Options}
+%    \begin{macrocode}
+\DeclareOption{verb}{\@collcell@verbtrue}
+\DeclareOption{robustcr}{\@collcell@robustcrtrue}%
+\ProcessOptions\relax
+\if@collcell@verb
+  \RequirePackage{tabularx}
+  \def\collcell@beforeuser{%
+    \let\collcell@savedverb\verb
+    \let\verb\TX@verb
+    \let\TX@vwarn\collcell@vwarn
+  }%
+  \def\collcell@afteruser{\let\verb\collcell@savedverb}%
+  \def\collcell@vwarn{%
+    \PackageWarning{collcell}{\noexpand\verb may be unreliable inside a collected cell}%
+  }%
+\fi
+\if@collcell@robustcr
+    \RequirePackage{etoolbox}
+    \robustify\@arraycr
+\fi
+%    \end{macrocode}
+%
+% \subsection{Collect cell content}
 %    \begin{macrocode}
 \newtoks\collect@cell@toks
 %    \end{macrocode}
@@ -152,7 +186,9 @@
   \collect@cell@toks{}%
   \let\collect@cell@spaces\empty
   \def\collect@cell@end{%
+    \collcell@beforeuser
     \expandafter\ccell@swap\expandafter{\the\collect@cell@toks}{#1}%
+    \collcell@afteruser
   }%
   \def\collect@cell@next{\collect@cell@look}%
   \collect@cell@next
@@ -301,25 +337,28 @@
   \else
      \expandafter\@secondoftwo
   \fi
-    {\collect@cell@end#1}%
-    {%
-        \cc@iftoken\end
-        {\collect@cell@checkend}%
-        {\cc@iftoken\csname
-            {\collect@cell@checkcsname}%
-            {\cc@iftoken\unskip%
-                {%
-                    \@ifnextchar\endcollectcell
-                    {\collect@cell@end#1}%
-                    {\collect@cell@addarg{#1}\collect@cell@look}%
-                }%
-                {%
-                    \collect@cell@addarg{#1}%
-                    \collect@cell@look
-                }%
-            }%
+  {\collect@cell@end#1}%
+  {\cc@iftoken\end
+    {\collect@cell@checkend}%
+    {\cc@iftoken\csname
+      {\collect@cell@checkcsname}%
+      {\cc@iftoken\unskip%
+        {\@ifnextchar\endcollectcell
+            {\collect@cell@end#1}%
+            {\collect@cell@addarg{#1}\collect@cell@look}%
         }%
+        {\cc@iftoken\@sharp%
+          {%
+            \expandafter\collect@cell@addarg\expandafter{#1}%
+            \collect@cell@look
+          }{%
+            \collect@cell@addarg{#1}%
+            \collect@cell@look
+          }%
+        }%
+      }%
     }%
+  }%
 }
 %    \end{macrocode}
 % \end{macro}

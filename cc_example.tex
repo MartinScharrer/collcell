@@ -3,12 +3,21 @@
 
 \usepackage{tikz-timing}
 \usepackage{array}
-\usepackage{collcell}
+\usepackage[verb,robustcr]{collcell}
 \usepackage{tabularx}
 
 \def\mymacro#1{% Simple test macro
-  [#1)
+  (#1)%
 }
+
+\makeatletter
+\def\defmacro#1{% Simple test macro
+    \def\D{#1}\show\D
+    \edef\E{#1}\show\E
+    \expandafter\def\expandafter\F\expandafter{#1}\show\F
+    \show\@sharp
+}
+\makeatother
 
 \newtoks\mytoks
 \makeatletter
@@ -17,6 +26,7 @@
 \newcolumntype{T}{>{\collectcell\texttiming}c<{\endcollectcell}}
 \newcolumntype{F}{>{\collectcell{\color{blue}\fbox}}c<{\endcollectcell}}
 \newcolumntype{M}{>{\collectcell{\mfbox}}c<{\endcollectcell}}
+\newcolumntype{D}{>{\collectcell\defmacro}c<{\endcollectcell}}
 \newcolumntype{S}{>{\collectcell{\global\mytoks}}c<{\endcollectcell\the\mytoks}}
 \newcolumntype{R}{c<{\the\mytoks}}
 \def\savedcell{}
@@ -24,20 +34,57 @@
 
 \def\showme#1\ignorespaces#2#3#4#5{\show#2\show#3\show#4\show#5}
 
-\usepackage{tabularx}
-\makeatletter
-\usepackage{etoolbox}
-\robustify\@arraycr
-\makeatother
 
 \begin{document}
   \bfseries
 
  
+\begin{tabular}{CCC}
+    A & \relax\verb+\relax\empty+ & C  \\
+\end{tabular}%
+
+\end{document}
+
+\begin{tabular}{DDD}
+    \multicolumn3{D}{   Hello   } \\
+    A & B & C  \\
+\end{tabular}%
+
+
+ 
+abc%
+\begin{tabular}{CCC}
+    \multicolumn{3}{C}{Test}  \\
+    \multicolumn1{>{\collectcell\fbox}l<{\endcollectcell}}{ Hello } & B & C \\
+    \multicolumn1{>{\collectcell\fbox}l<{\endcollectcell}}{Hello} & B & C \\
+    A & B & C  \\
+\end{tabular}%
+test
+
 abc%
 \begin{tabular}{C}
     \empty\empty  \\
 %  test & \relax\empty\\
+\end{tabular}%
+test
+
+ 
+abc%
+\begin{tabular}{C}
+    \empty  \\
+%  test & \relax\empty\\
+\end{tabular}%
+test
+
+ 
+abc%
+\begin{tabular}{C}
+     \\
+\end{tabular}%
+test
+
+abc%
+\begin{tabular}{C}
 \end{tabular}%
 test
 
