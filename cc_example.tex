@@ -3,7 +3,7 @@
 
 \usepackage{tikz-timing}
 \usepackage{array}
-\usepackage[verb,robustcr]{collcell}
+\usepackage[robustcr,verb]{collcell}
 \usepackage{tabularx}
 
 \def\mymacro#1{% Simple test macro
@@ -43,14 +43,14 @@
     A & \relax\verb+\relax\empty+ & C  \\
 \end{tabular}%
 
-\end{document}
 
-\begin{tabular}{DDD}
-    \multicolumn3{D}{   Hello   } \\
-    A & B & C  \\
+\begin{tabular}{CCC}
+    \multicolumn3{C}{   Hello   } \\
+    A & B &\\
 \end{tabular}%
 
 
+\end{document}
  
 abc%
 \begin{tabular}{CCC}

@@ -32,7 +32,9 @@
 %<*driver>
 \documentclass{ydoc}
 \GetFileInfo{\jobname.dtx}
-\usepackage{collcell}[\filedate]
+\usepackage[robustcr]{collcell}[\filedate]
+\usepackage{tikz-timing}
+\lstset{language=[latex]tex,basicstyle=\ttfamily}
 
 \EnableCrossrefs
 %\CodelineIndex
@@ -135,20 +137,73 @@
 % in braces `|{ }|' to ensure proper operation.
 %
 %
-% \section{Tests}
+% \section{Tests and Examples}
+%
 % \begin{example}
+% \caption{Framebox, texttiming, expanded tokens, sub-tabular}
 % \begin{examplecode}
-%   \newcommand*\Meaning[1]{{\def\CODE{#1}\meaning\CODE}}%
-%   \newcommand*\double[1]{{#1}{#1}}%
-%   \newcolumntype{F}{>{\collectcell\fbox}l<{\endcollectcell}}
-%   \newcolumntype{M}{>{\collectcell\Meaning}l<{\endcollectcell}}
-%   \newcolumntype{D}{>{\collectcell\double}l<{\endcollectcell}}
-%   \tracingall
-%   \begin{tabular}{FMD}
-%      A & B & C \\
-%      A & B & C \\
-%      A & B & C \\
-%   \end{tabular}
+%     \makeatletter
+%     \newcommand*\Meaning[1]{\def\CODE{#1}%
+%          \ttfamily\expandafter\strip@prefix\meaning\CODE}%
+%     \newcolumntype{F}{>{\collectcell\fbox}l<{\endcollectcell}}
+%     \newcolumntype{M}{>{\collectcell\Meaning}l<{\endcollectcell}}
+%     \newcolumntype{T}{>{\collectcell\texttiming}l<{\endcollectcell}}
+%     \begin{tabular}{F@{}|@{}M@{}|@{}T}
+%        A & B                       & HLDZ 2{HZLZ}         \\
+%        A & \empty\relax Z5D{TEST}Z & Z5D{TEST}Z  \\
+%        {\begin{tabular}{cFc} a & b & c \end{tabular}} &
+%         \relax\begin{quote}AA\end{quote}   & $5+5${C}       \\
+%     \end{tabular}
+% \end{examplecode}
+% \end{example}
+%
+% \makeatletter
+% \newcommand*\Meaning[1]{\def\CODE{#1}%
+%      \ttfamily\expandafter\strip@prefix\meaning\CODE}%
+% \newcolumntype{M}{>{\collectcell\Meaning}l<{\endcollectcell}}
+% \newcolumntype{F}{>{\collectcell\fbox}l<{\endcollectcell}}
+% \makeatother
+%
+% \begin{example}
+% \caption{Multicolumn, expanded row macro}
+% \begin{examplecode}
+%     \def\abc{ \empty A & \empty B & \empty C }
+%     \begin{tabular}{MMM}
+%       \multicolumn{2}{M}{\empty Multi} & \empty single \\
+%       \abc \\
+%     \end{tabular}
+% \end{examplecode}
+% \end{example}
+%
+% \begin{example}
+% \caption{Empty cells, missing `\texttt{\textbackslash\textbackslash}' at end}
+% \begin{examplecode}
+%     \begin{tabular}{|F|F|F|}
+%        \\
+%        A & \\
+%        A & B \\
+%        A & B & \\
+%        A & B & C \\
+%        & \\
+%        & B \\
+%        & B & \\
+%        & B & C \\
+%        & & \\
+%        & & C \\
+%        A & B & C
+%     \end{tabular}
+% \end{examplecode}
+% \end{example}
+%
+% \begin{example}
+% \caption{Empty cells, missing `\texttt{\textbackslash\textbackslash}' at end}
+% \begin{examplecode}
+%     \begin{tabular}{>{\collectcell\Meaning}F<{\endcollectcell}}
+%         A \\
+%         A \\
+%         A \\
+%         A \\
+%     \end{tabular}
 % \end{examplecode}
 % \end{example}
 %
