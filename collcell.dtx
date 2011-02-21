@@ -135,6 +135,23 @@
 % in braces `|{ }|' to ensure proper operation.
 %
 %
+% \section{Tests}
+% \begin{example}
+% \begin{examplecode}
+%   \newcommand*\Meaning[1]{{\def\CODE{#1}\meaning\CODE}}%
+%   \newcommand*\double[1]{{#1}{#1}}%
+%   \newcolumntype{F}{>{\collectcell\fbox}l<{\endcollectcell}}
+%   \newcolumntype{M}{>{\collectcell\Meaning}l<{\endcollectcell}}
+%   \newcolumntype{D}{>{\collectcell\double}l<{\endcollectcell}}
+%   \tracingall
+%   \begin{tabular}{FMD}
+%      A & B & C \\
+%      A & B & C \\
+%      A & B & C \\
+%   \end{tabular}
+% \end{examplecode}
+% \end{example}
+%
 % \StopEventually{}
 % \clearpage
 % \iffalse
@@ -169,8 +186,8 @@
   }%
 \fi
 \if@collcell@robustcr
-    \RequirePackage{etoolbox}
-    \robustify\@arraycr
+  \RequirePackage{etoolbox}
+  \robustify\@arraycr
 \fi
 %    \end{macrocode}
 %
@@ -236,7 +253,7 @@
     \edef\collect@cell@spaces{\collect@cell@spaces\space}%
     \def\collect@cell@next{\collect@cell@eatspace}%
   }{%
-    \cc@iftoken\@sptoken
+    \cc@iftoken\bgroup
     {%
       \def\collect@cell@next{\collect@cell@group}%
     }{%
@@ -297,7 +314,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\collect@cell@checkend}
+% \begin{macro}{\collect@cell@checkend}[1]{The argument of an \string\end~macro}
+% Reads the argument of |\end| and checks if it is identical to the current environment (|tabular|, |array|, |tabularx|, ...).
+% If so the collecting of token is ended, otherwise the |\end| and its argument are added to the 
 %    \begin{macrocode}
 \def\collect@cell@checkend#1{%
   \begingroup
@@ -315,12 +334,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\collect@cell@arg}
-% Handles the arguments.
-% The first token of the argument is still in the |lettoken| macro which is compared
-% against a list of possible end tokens.
-% Then either the cell end is handled or the argument is added to the token register
-% and the rest of the cell is processed.
+% \begin{macro}{\cc@iftoken}
+% Compares the |\collect@cell@lettoken| with the token given as argument.
 %    \begin{macrocode}
 \def\cc@iftoken#1{%
   \ifx\collect@cell@lettoken#1
@@ -329,7 +344,16 @@
     \expandafter\@secondoftwo
   \fi
 }
-
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\collect@cell@arg}
+% Handles the arguments.
+% The first token of the argument is still in the |lettoken| macro which is compared
+% against a list of possible end tokens.
+% Then either the cell end is handled or the argument is added to the token register
+% and the rest of the cell is processed.
+%    \begin{macrocode}
 \def\collect@cell@arg#1{%
   \in@{#1}{\\\endtabular\endarray}%
   \ifin@
