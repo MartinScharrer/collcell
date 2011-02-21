@@ -248,19 +248,14 @@
 % \begin{macro}{\collect@cell@look@}
 %    \begin{macrocode}
 \def\collect@cell@look@{%
-  \cc@iftoken\@sptoken
-  {%
+  \cc@iftoken\@sptoken{%
     \edef\collect@cell@spaces{\collect@cell@spaces\space}%
-    \def\collect@cell@next{\collect@cell@eatspace}%
+    \collect@cell@eatspace
   }{%
     \cc@iftoken\bgroup
-    {%
-      \def\collect@cell@next{\collect@cell@group}%
-    }{%
-      \def\collect@cell@next{\collect@cell@arg}%
-    }%
+      {\collect@cell@group}%
+      {\collect@cell@arg}%
   }%
-  \collect@cell@next
 }
 %    \end{macrocode}
 % \end{macro}
@@ -338,7 +333,7 @@
 % Compares the |\collect@cell@lettoken| with the token given as argument.
 %    \begin{macrocode}
 \def\cc@iftoken#1{%
-  \ifx\collect@cell@lettoken#1
+  \ifx#1\collect@cell@lettoken
     \expandafter\@firstoftwo
   \else
     \expandafter\@secondoftwo
