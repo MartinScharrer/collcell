@@ -255,10 +255,12 @@
 %    \begin{macrocode}
 \newenvironment{collectcell}{}{}
 \def\collectcell#1#2\ignorespaces{%
-  \collect@cell@toks{}%
+  \begingroup
+  \collect@cell@toks{#2}%
   \let\collect@cell@spaces\empty
   \def\collect@cell@end{%
-    \collcell@beforeuser
+    \expandafter\endgroup
+    \expandafter\collcell@beforeuser
     \expandafter\ccell@swap\expandafter{\the\collect@cell@toks}{#1}%
     \collcell@afteruser
   }%
@@ -426,8 +428,14 @@
             \expandafter\collect@cell@addarg\expandafter{#1}%
             \collect@cell@look
           }{%
+            \cc@iftoken\endcollectcell%
+            {%
+              \collect@cell@end%
+            }%
+            {%
             \collect@cell@addarg{#1}%
             \collect@cell@look
+            }%
           }%
         }%
       }%
