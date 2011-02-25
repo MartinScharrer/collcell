@@ -351,17 +351,18 @@
 %    \begin{macrocode}
 \def\collect@cell@checkcsname#1\endcsname{%
   \begingroup
-  \def\@tempa{#1}%
-  \def\@tempb{endtabular*}%
-  \ifx\@tempa\@tempb
+  \expandafter\ccell@swap\expandafter
+    {\expandafter,\@currenvir,endtabular,endtabular*,array,tabularx,}%
+    {\in@{,#1,}}%
+  \ifin@
     \endgroup
-    \def\collect@cell@next{\collect@cell@end\csname#1\endcsname}%
+    \expandafter\@firstoftwo
   \else
     \endgroup
-    \collect@cell@addarg{\csname#1\endcsname}%
-    \def\collect@cell@next{\collect@cell@look}%
+    \expandafter\@secondoftwo
   \fi
-  \collect@cell@next
+    {\collect@cell@cr\\\csname#1\endcsname}%
+    {\collect@cell@addarg{\csname#1\endcsname}\collect@cell@look}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -375,13 +376,13 @@
   \def\@tempa{#1}%
   \ifx\@tempa\@currenvir
     \endgroup
-    \def\collect@cell@next{\collect@cell@end\end{#1}}%
+    \expandafter\@firstoftwo
   \else
     \endgroup
-    \collect@cell@addarg{\end{#1}}%
-    \def\collect@cell@next{\collect@cell@look}%
+    \expandafter\@secondoftwo
   \fi
-  \collect@cell@next
+    {\collect@cell@cr\\\end{#1}}%
+    {\collect@cell@addarg{\end{#1}}\collect@cell@look}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -406,35 +407,51 @@
 % Then either the cell end is handled or the argument is added to the token register
 % and the rest of the cell is processed.
 %    \begin{macrocode}
+\let\collcell@realcr\cr
+
+\def\collect@cell@cr{%
+  \iffalse{\fi
+  \def\cr{%
+    \expandafter
+    \collect@cell@look
+    \collcell@realcr
+  }%
+  \iffalse}\fi
+}
+
 \def\collect@cell@arg#1{%
-  \in@{#1}{\\\endtabular\endarray}%
+  \expandafter\ccell@swap\expandafter
+    {\csname endtabular*\endcsname\endtabular\endarray}{\in@{#1}}%
   \ifin@
      \expandafter\@firstoftwo
   \else
      \expandafter\@secondoftwo
   \fi
-  {\collect@cell@end#1}%
-  {\cc@iftoken\end
-    {\collect@cell@checkend}%
-    {\cc@iftoken\csname
-      {\collect@cell@checkcsname}%
-      {\cc@iftoken\unskip%
-        {\@ifnextchar\endcollectcell
-            {\collect@cell@end#1}%
-            {\collect@cell@addarg{#1}\collect@cell@look}%
-        }%
-        {\cc@iftoken\@sharp%
-          {%
-            \expandafter\collect@cell@addarg\expandafter{#1}%
-            \collect@cell@look
-          }{%
-            \cc@iftoken\endcollectcell%
+  {\collect@cell@cr\\#1}%
+  {\cc@iftoken\\%
+    {\collect@cell@cr#1}%
+    {\cc@iftoken\end
+      {\collect@cell@checkend}%
+      {\cc@iftoken\csname
+        {\collect@cell@checkcsname}%
+        {\cc@iftoken\unskip%
+          {\@ifnextchar\endcollectcell
+              {\collect@cell@end#1}%
+              {\collect@cell@addarg{#1}\collect@cell@look}%
+          }%
+          {\cc@iftoken\@sharp%
             {%
-              \collect@cell@end%
-            }%
-            {%
-            \collect@cell@addarg{#1}%
-            \collect@cell@look
+              \expandafter\collect@cell@addarg\expandafter{#1}%
+              \collect@cell@look
+            }{%
+              \cc@iftoken\endcollectcell%
+              {%
+                \collect@cell@end%
+              }%
+              {%
+              \collect@cell@addarg{#1}%
+              \collect@cell@look
+              }%
             }%
           }%
         }%
