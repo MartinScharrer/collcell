@@ -216,8 +216,8 @@
 %
 %    \begin{macrocode}
 \RequirePackage{array}
-\let\collcell@beforeuser\empty
-\let\collcell@afteruser\empty
+\def\collcell@beforeuser{\ignorespaces}
+\def\collcell@afteruser{\unskip}
 
 \newif\if@collcell@verb
 \newif\if@collcell@robustcr
@@ -234,8 +234,9 @@
     \let\collcell@savedverb\verb
     \let\verb\TX@verb
     \let\TX@vwarn\collcell@vwarn
+    \ignorespaces
   }%
-  \def\collcell@afteruser{\let\verb\collcell@savedverb}%
+  \def\collcell@afteruser{\unskip\let\verb\collcell@savedverb}%
   \def\collcell@vwarn{%
     \PackageWarning{collcell}{\noexpand\verb may be unreliable inside a collected cell}%
   }%
@@ -437,7 +438,9 @@
         {\cc@iftoken\unskip%
           {\@ifnextchar\endcollectcell
               {\@firstoftwo{\collect@cell@end#1}}%
-              {\collect@cell@addarg{#1}\collect@cell@look}%
+              {\let\collect@cell@spaces\empty
+               %\collect@cell@addarg{#1}% do not include the \unskip
+               \collect@cell@look}%
           }%
           {\cc@iftoken\@sharp%
             {%
