@@ -436,7 +436,7 @@
         {\collect@cell@checkcsname}%
         {\cc@iftoken\unskip%
           {\@ifnextchar\endcollectcell
-              {\collect@cell@end#1}%
+              {\@firstoftwo{\collect@cell@end#1}}%
               {\collect@cell@addarg{#1}\collect@cell@look}%
           }%
           {\cc@iftoken\@sharp%
