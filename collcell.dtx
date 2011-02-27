@@ -441,58 +441,6 @@
   \iffalse}\fi
 }
 
-\def\collect@cell@arg@@@@#1{%
-  \expandafter\ccell@swap\expandafter
-    {\csname endtabular*\endcsname\endtabular\endarray}{\in@{#1}}%
-  \ifin@
-     \expandafter\@firstoftwo
-  \else
-     \expandafter\@secondoftwo
-  \fi
-  {\collect@cell@cr\\#1}%
-  {\cc@iftoken\\%
-    {\collect@cell@cr#1}%
-    {\cc@iftoken\end
-      {\collect@cell@checkend}%
-      {\cc@iftoken\csname
-        {\collect@cell@checkcsname}%
-        {\cc@iftoken\unskip%
-          {\let\collect@cell@spaces\empty
-           %\collect@cell@addarg{#1}% do not include the \unskip
-           \collect@cell@look%
-          }%
-          {\cc@iftoken\@sharp%
-            {%
-              \expandafter\collect@cell@addarg\expandafter{#1}%
-              \collect@cell@look
-            }{%
-              \cc@iftoken\collectcell%
-                {%
-                  \advance\collect@cell@count by \@ne
-                  \collect@cell@addcc%
-                }
-                {\cc@iftoken\endcollectcell%
-                  {%
-                    \ifnum\collect@cell@count=\z@
-                      \expandafter\collect@cell@end
-                    \else
-                      \advance\collect@cell@count by \m@ne%
-                      \collect@cell@addarg{#1}%
-                      \expandafter\collect@cell@look
-                    \fi
-                  }%
-                  {%
-                    \collect@cell@addarg{#1}%
-                    \collect@cell@look
-                  }%
-              }%
-            }%
-          }%
-        }%
-      }%
-    }%
-  }%
-}
 \def\collect@cell@arg#1{%
   \expandafter\ccell@swap\expandafter
     {\csname endtabular*\endcsname\endtabular\endarray}{\in@{#1}}%
@@ -506,31 +454,32 @@
     \\{\collect@cell@cr#1}%
     \end{\collect@cell@checkend}%
     \csname{\collect@cell@checkcsname}%
-    \unskip{\let\collect@cell@spaces\empty
-           %\collect@cell@addarg{#1}% do not include the \unskip
-           \collect@cell@look%
-          }%
+    \unskip{%
+      \let\collect@cell@spaces\empty
+      %\collect@cell@addarg{#1}% do not include the \unskip
+      \collect@cell@look%
+    }%
     \@sharp{%
-              \expandafter\collect@cell@addarg\expandafter{#1}%
-              \collect@cell@look
-            }%
+      \expandafter\collect@cell@addarg\expandafter{#1}%
+      \collect@cell@look
+    }%
     \collectcell{%
-                  \advance\collect@cell@count by \@ne
-                  \collect@cell@addcc%
-                }%
+      \advance\collect@cell@count by \@ne
+      \collect@cell@addcc%
+    }%
     \endcollectcell{%
-                    \ifnum\collect@cell@count=\z@
-                      \expandafter\collect@cell@end
-                    \else
-                      \advance\collect@cell@count by \m@ne%
-                      \collect@cell@addarg{#1}%
-                      \expandafter\collect@cell@look
-                    \fi
-                  }%
+      \ifnum\collect@cell@count=\z@
+        \expandafter\collect@cell@end
+      \else
+        \advance\collect@cell@count by \m@ne%
+        \collect@cell@addarg{#1}%
+        \expandafter\collect@cell@look
+      \fi
+    }%
     \default{%
-                    \collect@cell@addarg{#1}%
-                    \collect@cell@look
-            }%
+      \collect@cell@addarg{#1}%
+      \collect@cell@look
+    }%
    \endcc@case
   }%
 }
