@@ -308,14 +308,14 @@
 % All other are handled by \Macro\collect@cell@arg.
 %    \begin{macrocode}
 \def\collect@cell@look@{%
-  \cc@iftoken\@sptoken{%
-    \edef\collect@cell@spaces{\collect@cell@spaces\space}%
-    \collect@cell@eatspace
-  }{%
-    \cc@iftoken\bgroup
-      {\collect@cell@group}%
-      {\collect@cell@arg}%
-  }%
+  \cc@case
+    \@sptoken{%
+      \edef\collect@cell@spaces{\collect@cell@spaces\space}%
+      \collect@cell@eatspace
+    }%
+    \bgroup{\collect@cell@group}%
+    \default{\collect@cell@arg}%
+  \endcc@case
 }
 %    \end{macrocode}
 % \end{macro}
@@ -408,7 +408,7 @@
 %    \begin{macrocode}
 \def\cc@case{%
   \begingroup
-  \let\default\collect@cell@lettoken
+  \let\default= \collect@cell@lettoken
   \cc@@case
 }
 \def\cc@@case#1{%
