@@ -143,25 +143,24 @@
 % \caption{Framebox, texttiming, expanded tokens, sub-tabular}
 % \begin{examplecode}
 %     \makeatletter
-%     \newcommand*\Meaning[1]{\def\CODE{#1}%^^A
-%          \texttt{\expandafter\strip@prefix\meaning\CODE}}
-%     \newcolumntype{F}{>{\collectcell\fbox}l<{\endcollectcell}}
-%     \newcolumntype{M}{>{\collectcell\Meaning}l<{\endcollectcell}}
-%     \newcolumntype{T}{>{\collectcell\texttiming}l<{\endcollectcell}}
-%     \begin{tabular}{F@{}|@{}M@{}|@{}T}
+%     \newcommand*\Meaning[1]
+%        {\def\CODE{#1}\texttt{\expandafter\strip@prefix\meaning\CODE}}%
+%     \newcolumntype{F}{>{\collectcell\fbox}l<{\endcollectcell}}%
+%     \newcolumntype{M}{>{\collectcell\Meaning}l<{\endcollectcell}}%
+%     \newcolumntype{T}{>{\collectcell\texttiming}l<{\endcollectcell}}%
+%     \begin{tabular}{@{}F@{}|@{}M@{}|@{}T@{}}
 %        A & B                       & HLDZ 2{HZLZ}         \\
 %        A & \empty\relax Z5D{TEST}Z & Z5D{TEST}Z  \\
 %        {\begin{tabular}{cFc} a & b & c \end{tabular}} &
 %         \relax\begin{quote}AA\end{quote}   & $5+5${C}       \\
-%     \end{tabular}
+%     \end{tabular}%
 % \end{examplecode}
 % \end{example}
 %
 % \makeatletter
-% \newcommand*\Meaning[1]{\def\CODE{#1}%^^A
-%      \texttt{\expandafter\strip@prefix\meaning\CODE}}%
-% \newcolumntype{M}{>{\collectcell\Meaning}l<{\endcollectcell}}
-% \newcolumntype{F}{>{\collectcell\fbox}l<{\endcollectcell}}
+% \newcommand*\Meaning[1]{\def\CODE{#1}\texttt{\expandafter\strip@prefix\meaning\CODE}}%
+% \newcolumntype{M}{>{\collectcell\Meaning}l<{\endcollectcell}}%
+% \newcolumntype{F}{>{\collectcell\fbox}l<{\endcollectcell}}%
 % \makeatother
 %
 % \begin{example}
@@ -199,9 +198,8 @@
 % \caption{Empty cells, missing `\texttt{\textbackslash\textbackslash}' at end}
 % \begin{examplecode}
 %     \begin{tabular}{>{\collectcell\Meaning}F<{\endcollectcell}}
-%         A \\A \\
-%         \empty E \\
-%         \relax \\
+%         A \\
+%         A
 %     \end{tabular}
 % \end{examplecode}
 % \end{example}
