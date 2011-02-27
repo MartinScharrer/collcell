@@ -299,10 +299,7 @@
 % \begin{macro}{\collect@cell@eatspace}
 % Eats a following space and call the 'look' macro again.
 %    \begin{macrocode}
-\begingroup
-\def\:{\collect@cell@eatspace}
-\expandafter\gdef\: {\collect@cell@look}
-\endgroup
+\@firstofone{\def\collect@cell@eatspace} {\collect@cell@look}
 %    \end{macrocode}
 % \end{macro}
 %
