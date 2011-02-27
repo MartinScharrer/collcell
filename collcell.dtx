@@ -288,6 +288,7 @@
 %
 %
 % \begin{macro}{\collect@cell@look}
+% Looks ahead to the next token and call the next macro to handle it.
 %    \begin{macrocode}
 \def\collect@cell@look{%
   \futurelet\collect@cell@lettoken\collect@cell@look@
@@ -296,6 +297,7 @@
 % \end{macro}
 %
 % \begin{macro}{\collect@cell@eatspace}
+% Eats a following space and call the 'look' macro again.
 %    \begin{macrocode}
 \begingroup
 \def\:{\collect@cell@eatspace}
@@ -305,6 +307,8 @@
 % \end{macro}
 %
 % \begin{macro}{\collect@cell@look@}
+% Handles special tokens which should not be read as argument.
+% All other are handled by \Macro\collect@cell@arg.
 %    \begin{macrocode}
 \def\collect@cell@look@{%
   \cc@iftoken\@sptoken{%
@@ -403,7 +407,7 @@
 % \end{macro}
 %
 % \begin{macro}{\cc@case}
-% Compares the |\collect@cell@lettoken| with the token given as argument.
+% Case statement over |\collect@cell@lettoken|.
 %    \begin{macrocode}
 \def\cc@case{%
   \begingroup
