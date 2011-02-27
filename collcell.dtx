@@ -48,7 +48,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{0}
+% \CheckSum{334}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -160,12 +160,17 @@
 % \end{description}
 %
 % \subsection{Limitations}
-% The macro |\unskip| should not be included inside the cell directly, but only inside a |{ }| group or a macro. Otherwise tt will be taken as part of the internal
-% cell code and ignored.
 %
+% \DescribeMacro\ccunskip
+% The macro |\unskip| should not be included inside the cell directly, but only inside a |{ }| group or a macro.
+% Otherwise it will be taken as part of the internal cell code and ignored. Leading spaces will however be removed.
+% This macro can be used as a replacement of |\unskip| inside the cells.
+%
+% \DescribeMacro\cci
 % The content of every cell is expanded by TeX itself until the first non-expandable token (macro, character, \ldots) is found. This happens to check if a |\noalign| follows
 % with e.g.\ is used inside |\hrule| and other rule drawing macros. There is nothing what \pkg{collcell} could do about this.
-% If this expansion is unwanted a non-expandable token like |\relax| should be placed at the beginning of the cell.
+% If this expansion is unwanted the non-expandable token \Macro\cci should be placed at the beginning of the cell. This macro will be ignored (discarded) by \pkg{collcell} and
+% will not be provided to the user macro (|cci| = collect cell; ignore).
 %
 % \section{Tests and Examples}
 %
@@ -181,8 +186,10 @@
 %     \begin{tabular}{@{}F@{}|@{}M@{}|@{}T@{}}
 %        A & B                       & HLDZ 2{HZLZ} \\
 %        A & \empty\relax Z5D{TEST}Z & Z5D{TEST}Z  \\
+%        A & \cci\empty Z5D{TEST}Z & Z5D{TEST}Z  \\
 %        {\begin{tabular}{cFc} a & b & c \end{tabular}} &
 %         \relax\begin{quote}AA\end{quote}   & $5+5${C} \\
+%        A & B   \ccunskip B                 & 3{ttz} \\
 %     \end{tabular}%
 % \end{examplecode}
 % \end{example}
@@ -220,16 +227,6 @@
 %        & & \\
 %        & & C \\
 %        A & B & C
-%     \end{tabular}
-% \end{examplecode}
-% \end{example}
-%
-% \begin{example}
-% \caption{Empty cells, missing `\texttt{\textbackslash\textbackslash}' at end}
-% \begin{examplecode}
-%     \begin{tabular}{>{\collectcell\Meaning}F<{\endcollectcell}}
-%         A \\
-%         A
 %     \end{tabular}
 % \end{examplecode}
 % \end{example}
@@ -474,6 +471,26 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\collcell@unskip}
+% Wrapper around |\unskip| to protect it from the eyes of the token scanner.
+% It is protected to avoid trouble if the user wrongly uses it at the beginning of the cell.
+% The macro is first defined using |\newcommand| to warn the user about name collisions.
+%    \begin{macrocode}
+\newcommand*\ccunskip{}
+\protected\def\ccunskip{\unskip}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\cci}
+% Protected empty macro usable to stop the expansion of tokens at the beginning of the
+% cell. It is ignored (gobbled) by the token scanner.
+% The macro is first defined using |\newcommand| to warn the user about name collisions.
+%    \begin{macrocode}
+\newcommand*\cci{}
+\protected\def\cci{}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\collect@cell@cr}
 % Redefines the table line/row end macro |\cr| so that 
 % token collection is restarted after the real |\cr| is expanded
@@ -534,6 +551,9 @@
         \advance\collect@cell@count by \m@ne%
         \expandafter\collect@cell@look
       \fi
+    }%
+    \cci{%
+      \collect@cell@look
     }%
     \default{%
       \expandafter\ccell@swap\expandafter
