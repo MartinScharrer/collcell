@@ -404,6 +404,26 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\cc@case}
+% Compares the |\collect@cell@lettoken| with the token given as argument.
+%    \begin{macrocode}
+\def\cc@case{%
+  \begingroup
+  \let\default\collect@cell@lettoken
+  \cc@@case
+}
+\def\cc@@case#1{%
+  \ifx#1\collect@cell@lettoken
+    \expandafter\cc@@truecase
+  \else
+    \expandafter\cc@@falsecase
+  \fi
+}
+\def\cc@@truecase#1#2\endcc@case{\endgroup#1}
+\def\cc@@falsecase#1{\cc@@case}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\collect@cell@arg}
 % Handles the arguments.
 % The first token of the argument is still in the |lettoken| macro which is compared
@@ -423,7 +443,7 @@
   \iffalse}\fi
 }
 
-\def\collect@cell@arg#1{%
+\def\collect@cell@arg@@@@#1{%
   \expandafter\ccell@swap\expandafter
     {\csname endtabular*\endcsname\endtabular\endarray}{\in@{#1}}%
   \ifin@
@@ -473,6 +493,47 @@
         }%
       }%
     }%
+  }%
+}
+\def\collect@cell@arg#1{%
+  \expandafter\ccell@swap\expandafter
+    {\csname endtabular*\endcsname\endtabular\endarray}{\in@{#1}}%
+  \ifin@
+     \expandafter\@firstoftwo
+  \else
+     \expandafter\@secondoftwo
+  \fi
+  {\collect@cell@cr\\#1}%
+  {\cc@case
+    \\{\collect@cell@cr#1}%
+    \end{\collect@cell@checkend}%
+    \csname{\collect@cell@checkcsname}%
+    \unskip{\let\collect@cell@spaces\empty
+           %\collect@cell@addarg{#1}% do not include the \unskip
+           \collect@cell@look%
+          }%
+    \@sharp{%
+              \expandafter\collect@cell@addarg\expandafter{#1}%
+              \collect@cell@look
+            }%
+    \collectcell{%
+                  \advance\collect@cell@count by \@ne
+                  \collect@cell@addcc%
+                }%
+    \endcollectcell{%
+                    \ifnum\collect@cell@count=\z@
+                      \expandafter\collect@cell@end
+                    \else
+                      \advance\collect@cell@count by \m@ne%
+                      \collect@cell@addarg{#1}%
+                      \expandafter\collect@cell@look
+                    \fi
+                  }%
+    \default{%
+                    \collect@cell@addarg{#1}%
+                    \collect@cell@look
+            }%
+   \endcc@case
   }%
 }
 
