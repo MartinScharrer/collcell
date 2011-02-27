@@ -143,8 +143,8 @@
 % \caption{Framebox, texttiming, expanded tokens, sub-tabular}
 % \begin{examplecode}
 %     \makeatletter
-%     \newcommand*\Meaning[1]{\def\CODE{#1}%
-%          \ttfamily\expandafter\strip@prefix\meaning\CODE}%
+%     \newcommand*\Meaning[1]{\def\CODE{#1}%^^A
+%          \texttt{\expandafter\strip@prefix\meaning\CODE}}
 %     \newcolumntype{F}{>{\collectcell\fbox}l<{\endcollectcell}}
 %     \newcolumntype{M}{>{\collectcell\Meaning}l<{\endcollectcell}}
 %     \newcolumntype{T}{>{\collectcell\texttiming}l<{\endcollectcell}}
@@ -158,8 +158,8 @@
 % \end{example}
 %
 % \makeatletter
-% \newcommand*\Meaning[1]{\def\CODE{#1}%
-%      \ttfamily\expandafter\strip@prefix\meaning\CODE}%
+% \newcommand*\Meaning[1]{\def\CODE{#1}%^^A
+%      \texttt{\expandafter\strip@prefix\meaning\CODE}}%
 % \newcolumntype{M}{>{\collectcell\Meaning}l<{\endcollectcell}}
 % \newcolumntype{F}{>{\collectcell\fbox}l<{\endcollectcell}}
 % \makeatother
@@ -199,10 +199,9 @@
 % \caption{Empty cells, missing `\texttt{\textbackslash\textbackslash}' at end}
 % \begin{examplecode}
 %     \begin{tabular}{>{\collectcell\Meaning}F<{\endcollectcell}}
-%         A \\
-%         A \\
-%         A \\
-%         A \\
+%         A \\A \\
+%         \empty E \\
+%         \relax \\
 %     \end{tabular}
 % \end{examplecode}
 % \end{example}
@@ -270,9 +269,7 @@
     \expandafter\ccell@swap\expandafter{\the\collect@cell@toks}{#1}%
     \collcell@afteruser
   }%
-  \def\collect@cell@next{\collect@cell@look}%
-  \collect@cell@next
-  #2%
+  \collect@cell@look#2%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -454,15 +451,14 @@
               \cc@iftoken\collectcell%
                 {%
                   \advance\collect@cell@count by \@ne
-                  \collect@cell@addarg{#1}%
-                  \collect@cell@look
+                  \collect@cell@addcc%
                 }
                 {\cc@iftoken\endcollectcell%
                   {%
                     \ifnum\collect@cell@count=\z@
                       \expandafter\collect@cell@end
                     \else
-                      \advance\collect@cell@count by \m@ne
+                      \advance\collect@cell@count by \m@ne%
                       \collect@cell@addarg{#1}%
                       \expandafter\collect@cell@look
                     \fi
@@ -478,6 +474,11 @@
       }%
     }%
   }%
+}
+
+\def\collect@cell@addcc#1{%
+  \collect@cell@addarg{\collectcell{#1}\ignorespaces}%
+  \collect@cell@look
 }
 %    \end{macrocode}
 % \end{macro}
