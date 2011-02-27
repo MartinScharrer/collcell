@@ -221,12 +221,15 @@
 
 \newif\if@collcell@verb
 \newif\if@collcell@robustcr
+\@collcell@robustcrtrue
 %    \end{macrocode}
 %
 % \subsection{Options}
 %    \begin{macrocode}
 \DeclareOption{verb}{\@collcell@verbtrue}
+\DeclareOption{noverb}{\@collcell@verbfalse}
 \DeclareOption{robustcr}{\@collcell@robustcrtrue}%
+\DeclareOption{norobustcr}{\@collcell@robustcrfalse}%
 \ProcessOptions\relax
 \if@collcell@verb
   \RequirePackage{tabularx}
@@ -250,6 +253,7 @@
 % \subsection{Collect cell content}
 %    \begin{macrocode}
 \newtoks\collect@cell@toks
+\newcount\collect@cell@count
 %    \end{macrocode}
 %
 % \begin{macro}{\collectcell}[2]{user macro(s)}{ignored tokens, possible empty}
@@ -257,7 +261,8 @@
 \newenvironment{collectcell}{}{}
 \def\collectcell#1#2\ignorespaces{%
   \begingroup
-  \collect@cell@toks{#2}%
+  \collect@cell@count\z@
+  \collect@cell@toks{}%
   \let\collect@cell@spaces\empty
   \def\collect@cell@end{%
     \expandafter\endgroup
@@ -267,6 +272,7 @@
   }%
   \def\collect@cell@next{\collect@cell@look}%
   \collect@cell@next
+  #2%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -436,24 +442,35 @@
       {\cc@iftoken\csname
         {\collect@cell@checkcsname}%
         {\cc@iftoken\unskip%
-          {\@ifnextchar\endcollectcell
-              {\@firstoftwo{\collect@cell@end#1}}%
-              {\let\collect@cell@spaces\empty
-               %\collect@cell@addarg{#1}% do not include the \unskip
-               \collect@cell@look}%
+          {\let\collect@cell@spaces\empty
+           %\collect@cell@addarg{#1}% do not include the \unskip
+           \collect@cell@look%
           }%
           {\cc@iftoken\@sharp%
             {%
               \expandafter\collect@cell@addarg\expandafter{#1}%
               \collect@cell@look
             }{%
-              \cc@iftoken\endcollectcell%
-              {%
-                \collect@cell@end%
-              }%
-              {%
-              \collect@cell@addarg{#1}%
-              \collect@cell@look
+              \cc@iftoken\collectcell%
+                {%
+                  \advance\collect@cell@count by \@ne
+                  \collect@cell@addarg{#1}%
+                  \collect@cell@look
+                }
+                {\cc@iftoken\endcollectcell%
+                  {%
+                    \ifnum\collect@cell@count=\z@
+                      \expandafter\collect@cell@end
+                    \else
+                      \advance\collect@cell@count by \m@ne
+                      \collect@cell@addarg{#1}%
+                      \expandafter\collect@cell@look
+                    \fi
+                  }%
+                  {%
+                    \collect@cell@addarg{#1}%
+                    \collect@cell@look
+                  }%
               }%
             }%
           }%
