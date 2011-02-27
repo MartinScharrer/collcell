@@ -28,7 +28,7 @@
 %<*driver>
 \ProvidesFile{collcell.dtx}
 %</driver>
-  [2011/02/05 v0.1a Collect the content of a tabular cell]
+  [2011/02/27 v0.5 Collect the content of a tabular cell]
 %<*driver>
 \documentclass{ydoc}
 \GetFileInfo{\jobname.dtx}
@@ -70,6 +70,7 @@
 % \changes{v0.0}{2009/08/13}{Created package}
 % \changes{v0.1}{2011/02/04}{First released version}
 % \changes{v0.1a}{2011/02/05}{Fixed unwanted spaces. Fixed misspelled macros in example.}
+% \changes{v0.5}{2011/02/27}{Fixed several bugs and limitations. (Complete list to be inserted)}
 %
 %
 % \DoNotIndex{\newcommand,\newenvironment,\def,\edef,\xdef,\DeclareRobustCommand}
@@ -96,12 +97,17 @@
 % \vspace{1.2em}%
 %
 % \begin{abstract}
-% This small package provides macros which collect the cell content of a tabular
+% This package provides macros which collect the cell content of a tabular
 % and provide it to a macro as argument. It was inspired by the |\collect@body|
 % macro defined by the \pkg{amsmath} or the \pkg{environ} package, which can be used
 % to collect the body of an environment. Special care is taken to remove all aligning
 % macros inserted by tabular from the cell content. The macros also work in the last
-% column of a table. They do not support verbatim material inside the cells.
+% column of a tabular. They do not support verbatim material inside the cells, except of a
+% special almost-verbatim version of \verb+\verb+.
+%
+% This package is relatively new and might still not work in all possible situations which can arise
+% in a tabular. The implementation might change in future versions. Please do not hesitate to contact the
+% author about any issue and suggestions.
 % \end{abstract}
 %
 % \section{Usage}
@@ -136,6 +142,30 @@
 % Note that if such a cell contains a tabular environment by itself, the environment must be wrapped
 % in braces `|{ }|' to ensure proper operation.
 %
+% \subsection{Options}
+% The following options are supported:
+% \begin{description}
+%   \item[verb] \null
+%   \item[noverb] (Default |noverb|) Enables or disables the definition of a special almost-verbatim version of \verb+\verb+.
+%     At the moment the one defined by the \pkg{tabularx} package is used, which is therefore loaded when this feature is enabled.
+%     Future versions of \pkg{collcell} might provide this macro in a different way, so the visual result might be different.
+%     The \pkg{tabularx} should be loaded explicitly if it is used.
+%     This version of \verb+\verb+ will read the content first normally, i.e. non-verbatim, and then print the included tokens in a verbatim format.
+%     The content must include a balanced number of |{ }| and must not be end with |\|. Macros inside the content will be followed by a space.
+%     See the manual of \pkg{tabularx} (page 8 in the version from 1999/01/07) for a more detailed description.
+%   \item[robustcr]
+%   \item[norobustcr] (Default |robustcr|) This options enable or disable the redefinition of |\\| to a robust version, i.e. this macro
+%     will be prefixed with eTeX's |\protected| to ensure that it isn't expanded by the underlying |\halign|. If this feature disabled the
+%     last cell of a tabular must not be empty or only hold empty macros (like |\empty|).
+% \end{description}
+%
+% \subsection{Limitations}
+% The macro |\unskip| should not be included inside the cell directly, but only inside a |{ }| group or a macro. Otherwise tt will be taken as part of the internal
+% cell code and ignored.
+%
+% The content of every cell is expanded by TeX itself until the first non-expandable token (macro, character, \ldots) is found. This happens to check if a |\noalign| follows
+% with e.g.\ is used inside |\hrule| and other rule drawing macros. There is nothing what \pkg{collcell} could do about this.
+% If this expansion is unwanted a non-expandable token like |\relax| should be placed at the beginning of the cell.
 %
 % \section{Tests and Examples}
 %
@@ -149,10 +179,10 @@
 %     \newcolumntype{M}{>{\collectcell\Meaning}l<{\endcollectcell}}%
 %     \newcolumntype{T}{>{\collectcell\texttiming}l<{\endcollectcell}}%
 %     \begin{tabular}{@{}F@{}|@{}M@{}|@{}T@{}}
-%        A & B                       & HLDZ 2{HZLZ}         \\
+%        A & B                       & HLDZ 2{HZLZ} \\
 %        A & \empty\relax Z5D{TEST}Z & Z5D{TEST}Z  \\
 %        {\begin{tabular}{cFc} a & b & c \end{tabular}} &
-%         \relax\begin{quote}AA\end{quote}   & $5+5${C}       \\
+%         \relax\begin{quote}AA\end{quote}   & $5+5${C} \\
 %     \end{tabular}%
 % \end{examplecode}
 % \end{example}
