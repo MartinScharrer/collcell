@@ -324,10 +324,11 @@
 % Tests if the previous discovered |begin-group character {| token was a |\bgroup| or a |{|.
 % In the first case the command sequence is simply added but in the second case the surrounding 
 % braces must be added again.
+% The use of |\unexpanded| allows |#| in the cells, e.g. for in-cell macro definitions.
 %    \begin{macrocode}
 \def\collect@cell@group#1{%
   \begingroup
-  \def\@tempa{#1}%
+  \edef\@tempa{\unexpanded{#1}}%
   \def\@tempb{\bgroup}%
   \ifx\@tempa\@tempb
     \endgroup
@@ -476,15 +477,7 @@
 % and the rest of the cell is processed.
 %    \begin{macrocode}
 \def\collect@cell@arg#1{%
-  \expandafter\ccell@swap\expandafter
-    {\csname endtabular*\endcsname\endtabular\endarray}{\in@{#1}}%
-  \ifin@
-     \expandafter\@firstoftwo
-  \else
-     \expandafter\@secondoftwo
-  \fi
-  {\collect@cell@cr\\#1}%
-  {\cc@case
+  \cc@case
     \\{\collect@cell@cr#1}%
     \end{\collect@cell@checkend}%
     \csname{\collect@cell@checkcsname}%
@@ -513,11 +506,20 @@
       \fi
     }%
     \default{%
-      \collect@cell@addarg{#1}%
-      \collect@cell@look
+      \expandafter\ccell@swap\expandafter
+        {\csname endtabular*\endcsname\endtabular\endarray}{\in@{#1}}%
+      \ifin@
+          \expandafter\@firstoftwo
+      \else
+          \expandafter\@secondoftwo
+      \fi
+      {\collect@cell@cr\\#1}%
+      {%
+        \collect@cell@addarg{#1}%
+        \collect@cell@look
+      }%
     }%
-   \endcc@case
-  }%
+ \endcc@case
 }
 %    \end{macrocode}
 % \end{macro}
