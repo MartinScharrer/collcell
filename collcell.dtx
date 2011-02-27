@@ -472,8 +472,10 @@
       \ifnum\collect@cell@count=\z@
         \expandafter\collect@cell@end
       \else
+        \expandafter\endgroup
+        \expandafter\collect@cell@addarg\expandafter
+        {\expandafter{\the\collect@cell@toks}}%
         \advance\collect@cell@count by \m@ne%
-        \collect@cell@addarg{#1}%
         \expandafter\collect@cell@look
       \fi
     }%
@@ -486,7 +488,9 @@
 }
 
 \def\collect@cell@addcc#1{%
-  \collect@cell@addarg{\collectcell{#1}\ignorespaces}%
+  \collect@cell@addarg{#1}%
+  \begingroup
+  \collect@cell@toks{}%
   \collect@cell@look
 }
 %    \end{macrocode}
