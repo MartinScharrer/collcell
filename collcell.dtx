@@ -127,21 +127,18 @@
 % in braces `|{ }|' to ensure proper operation.
 %
 % \subsection{Options}
-% The following options are supported:
-% \begin{description}
-%   \item[verb] \null
-%   \item[noverb] (Default |noverb|) Enables or disables the definition of a special almost-verbatim version of \verb+\verb+.
-%     At the moment the one defined by the \pkg{tabularx} package is used, which is therefore loaded when this feature is enabled.
-%     Future versions of \pkg{collcell} might provide this macro in a different way, so the visual result might be different.
-%     The \pkg{tabularx} should be loaded explicitly if it is used.
-%     This version of \verb+\verb+ will read the content first normally, i.e. non-verbatim, and then print the included tokens in a verbatim format.
-%     The content must include a balanced number of |{ }| and must not be end with |\|. Macros inside the content will be followed by a space.
-%     See the manual of \pkg{tabularx} (page 8 in the version from 1999/01/07) for a more detailed description.
-%   \item[robustcr]
-%   \item[norobustcr] (Default |robustcr|) This options enable or disable the redefinition of |\\| to a robust version, i.e. this macro
-%     will be prefixed with eTeX's |\protected| to ensure that it isn't expanded by the underlying |\halign|. If this feature disabled the
-%     last cell of a tabular must not be empty or only hold empty macros (like |\empty|).
-% \end{description}
+%
+% The~\opt*{verb} and~\opt*{noverb} options enable or disable (default) the definition of a special almost-verbatim version of \verb+\verb+.
+% At the moment the one defined by the \pkg{tabularx} package is used, which is therefore loaded when this feature is enabled.
+% Future versions of \pkg{collcell} might provide this macro in a different way, so the visual result might be different.
+% The \pkg{tabularx} should be loaded explicitly if it is used.
+% This version of \verb+\verb+ will read the content first normally, i.e. non-verbatim, and then print the included tokens in a verbatim format.
+% The content must include a balanced number of |{ }| and must not be end with |\|. Macros inside the content will be followed by a space.
+% See the manual of \pkg{tabularx} (page 8 in the version from 1999/01/07) for a more detailed description.
+%
+% The~\opt*{robustcr} and \opt*{norobustcr} options enable (default) or disable the redefinition of |\\| to a robust version, i.e. this macro
+% will be prefixed with eTeX's |\protected| to ensure that it isn't expanded by the underlying |\halign|. If this feature disabled the
+% last cell of a tabular must not be empty or only hold empty macros (like |\empty|).
 %
 % \subsection{Limitations}
 %
