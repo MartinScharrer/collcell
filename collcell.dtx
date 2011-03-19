@@ -30,7 +30,7 @@
 %</driver>
   [2011/02/27 v0.5 Collect the content of a tabular cell]
 %<*driver>
-\documentclass{ydoc}
+\documentclass{ydoc}[2011/03/19]
 \GetFileInfo{\jobname.dtx}
 \usepackage[robustcr]{collcell}[\filedate]
 \usepackage{tikz-timing}
@@ -76,25 +76,9 @@
 % \DoNotIndex{\newcommand,\newenvironment,\def,\edef,\xdef,\DeclareRobustCommand}
 %
 % \GetFileInfo{\jobname.dtx}
-% \ifpdf
-% \hypersetup{%
-%   pdfauthor   = {Martin Scharrer <martin@scharrer-online.de>},
-%   pdftitle    = {The collcell package},
-%   pdfsubject  = {Documentation of LaTeX package collcell},
-%   pdfkeywords = {collcell, LaTeX, TeX}
-% }%
-% \fi
-% \clearpage
-% \null
-% \vspace*{-2em}
-% \begin{center}
-%   {\LARGE The \textsf{collcell} Package\\[\medskipamount]}
-%   {\large Martin Scharrer \\[\medskipamount]\normalsize 
-%   \url{martin@scharrer-online.de}\\[.8ex]
-%   \url{http://www.ctan.org/pkg/collcell/}\\[\medskipamount]}
-%   {\large Version \fileversion\ -- \filedate}\\
-% \end{center}
-% \vspace{1.2em}%
+% \author{Martin Scharrer}
+% \email{martin@scharrer-online.de}
+% \maketitle
 %
 % \begin{abstract}
 % This package provides macros which collect the cell content of a tabular
