@@ -394,7 +394,7 @@
     \endgroup
     \expandafter\@secondoftwo
   \fi
-    {\collect@cell@cr\\\csname#1\endcsname}%
+    {\collect@cell@cr\tabularnewline\csname#1\endcsname}%
     {\collect@cell@addarg{\csname#1\endcsname}\collect@cell@look}%
 }
 %    \end{macrocode}
@@ -414,7 +414,7 @@
     \endgroup
     \expandafter\@secondoftwo
   \fi
-    {\collect@cell@cr\\\end{#1}}%
+    {\collect@cell@cr\tabularnewline\end{#1}}%
     {\collect@cell@addarg{\end{#1}}\collect@cell@look}%
 }
 %    \end{macrocode}
@@ -507,7 +507,7 @@
 %    \begin{macrocode}
 \def\collect@cell@arg#1{%
   \cc@case
-    \\{\collect@cell@cr#1}%
+    \tabularnewline{\collect@cell@cr#1}%
     \end{\collect@cell@checkend}%
     \csname{\collect@cell@checkcsname}%
     \unskip{%
@@ -545,7 +545,7 @@
       \else
           \expandafter\@secondoftwo
       \fi
-      {\collect@cell@cr\\#1}%
+      {\collect@cell@cr\tabularnewline#1}%
       {%
         \collect@cell@addarg{#1}%
         \collect@cell@look
