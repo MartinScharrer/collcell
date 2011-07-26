@@ -1,10 +1,10 @@
 The collcell Package
 --------------------
 Copyright (C) 2009-2011 by Martin Scharrer <martin@scharrer-online.de>
-http://www.ctan.org/pkg/collcell/
-Version v0.1a -- 2011/02/05
+CTAN: http://www.ctan.org/pkg/collcell/
+Code repository: https://bitbucket.org/martin_scharrer/collcell
 
-This small package provides macros which collect the cell content of
+This package provides macros which collect the cell content of
 a tabular and provide it to a macro as argument. It was inspired by the
 \collect@body macro defined by the amsmath or the environ package,
 which can be used to collect the body of an environment. Special care
