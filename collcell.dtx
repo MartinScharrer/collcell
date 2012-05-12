@@ -1,37 +1,37 @@
 % \iffalse meta-comment
-%
-% Copyright (C) 2009-2011 by Martin Scharrer <martin@scharrer-online.de>
-% ----------------------------------------------------------------------
-%
-% This work may be distributed and/or modified under the
-% conditions of the LaTeX Project Public License, either version 1.3c
-% of this license or (at your option) any later version.
-% The latest version of this license is in
-%
-%   http://www.latex-project.org/lppl.txt
-%
-% and version 1.3c or later is part of all distributions of LaTeX
-% version 2008/05/04 or later.
-%
-% This work has the LPPL maintenance status `maintained'.
-%
-% The Current Maintainer of this work is Martin Scharrer.
-%
-% This work consists of the files collcell.dtx, collcell.ins
-% and the derived file collcell.sty.
-%
+%<=*COPYRIGHT>
+%% Copyright (C) 2009-2012 by Martin Scharrer <martin@scharrer-online.de>
+%% ----------------------------------------------------------------------
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Martin Scharrer.
+%%
+%% This work consists of the files collcell.dtx and collcell.ins
+%% and the derived filebase collcell.sty.
+%%
+%<=/COPYRIGHT>
 % \fi
-%%^^A $Id$
 %
 % \iffalse
-%<package>\ProvidesPackage{collcell}
 %<*driver>
-\ProvidesFile{collcell.dtx}
-%</driver>
-  [2011/02/27 v0.5 Collect the content of a tabular cell]
-%<*driver>
+\ProvidesFile{collcell.dtx}[%
+%<=*DATE>
+    2011/02/27
+%<=/DATE>
+%<=*VERSION>
+    v0.5
+%<=/VERSION>
+    DTX file for collcell]
 \documentclass{ydoc}[2011/03/19]
-\GetFileInfo{\jobname.dtx}
+\GetFileInfo{collcell.dtx}
 \usepackage[robustcr]{collcell}[\filedate]
 \usepackage{tikz-timing}
 \lstset{language=[latex]tex,basicstyle=\ttfamily}
@@ -48,7 +48,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{334}
+% \CheckSum{331}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -215,350 +215,13 @@
 %
 % \StopEventually{}
 % \clearpage
-% \iffalse
-%<*package>
-% \fi
+%
 % \section{Implementation}
 %
-%    \begin{macrocode}
-\RequirePackage{array}
-\def\collcell@beforeuser{\ignorespaces}
-\def\collcell@afteruser{\unskip}
-
-\newif\if@collcell@verb
-\newif\if@collcell@robustcr
-\@collcell@robustcrtrue
-%    \end{macrocode}
-%
-% \subsection{Options}
-%    \begin{macrocode}
-\DeclareOption{verb}{\@collcell@verbtrue}
-\DeclareOption{noverb}{\@collcell@verbfalse}
-\DeclareOption{robustcr}{\@collcell@robustcrtrue}%
-\DeclareOption{norobustcr}{\@collcell@robustcrfalse}%
-\ProcessOptions\relax
-\if@collcell@verb
-  \RequirePackage{tabularx}
-  \def\collcell@beforeuser{%
-    \let\collcell@savedverb\verb
-    \let\verb\TX@verb
-    \let\TX@vwarn\collcell@vwarn
-    \ignorespaces
-  }%
-  \def\collcell@afteruser{\unskip\let\verb\collcell@savedverb}%
-  \def\collcell@vwarn{%
-    \PackageWarning{collcell}{\noexpand\verb may be unreliable inside a collected cell}%
-  }%
-\fi
-\if@collcell@robustcr
-  \RequirePackage{etoolbox}
-  \robustify\@arraycr
-\fi
-%    \end{macrocode}
-%
-% \subsection{Collect cell content}
-%    \begin{macrocode}
-\let\collect@cell@toks\@temptokena
-\newcount\collect@cell@count
-%    \end{macrocode}
-%
-% \begin{macro}{\collectcell}[2]{user macro(s)}{ignored tokens, possible empty}
-%    \begin{macrocode}
-\newenvironment{collectcell}{}{}
-\def\collectcell#1#2\ignorespaces{%
-  \begingroup
-  \collect@cell@count\z@
-  \collect@cell@toks{}%
-  \let\collect@cell@spaces\empty
-  \def\collect@cell@end{%
-    \expandafter\endgroup
-    \expandafter\collcell@beforeuser
-    \expandafter\ccell@swap\expandafter{\the\collect@cell@toks}{#1}%
-    \collcell@afteruser
-  }%
-  \collect@cell@look#2%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\ccell@swap}
-% Swaps the two arguments. The second one (user macro(s)) is added without braces.
-%    \begin{macrocode}
-\def\ccell@swap#1#2{#2{#1}}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\endcollectcell}
-% Holds unique signature which will expand to nothing.
-%    \begin{macrocode}
-\def\endcollectcell{\@gobble{endcollectcell}}
-%    \end{macrocode}
-% \end{macro}
-%
-%
-% \begin{macro}{\collect@cell@look}
-% Looks ahead to the next token and call the next macro to handle it.
-%    \begin{macrocode}
-\def\collect@cell@look{%
-  \futurelet\collect@cell@lettoken\collect@cell@look@
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\collect@cell@eatspace}
-% Eats a following space and call the 'look' macro again.
-%    \begin{macrocode}
-\@firstofone{\def\collect@cell@eatspace} {\collect@cell@look}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\collect@cell@look@}
-% Handles special tokens which should not be read as argument.
-% All other are handled by \Macro\collect@cell@arg.
-%    \begin{macrocode}
-\def\collect@cell@look@{%
-  \cc@case
-    \@sptoken{%
-      \edef\collect@cell@spaces{\collect@cell@spaces\space}%
-      \collect@cell@eatspace
-    }%
-    \bgroup{\collect@cell@group}%
-    \default{\collect@cell@arg}%
-  \endcc@case
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\collect@cell@group}
-% Tests if the previous discovered |begin-group character {| token was a |\bgroup| or a |{|.
-% In the first case the command sequence is simply added but in the second case the surrounding 
-% braces must be added again.
-% The use of |\unexpanded| allows |#| in the cells, e.g. for in-cell macro definitions.
-%    \begin{macrocode}
-\def\collect@cell@group#1{%
-  \begingroup
-  \edef\@tempa{\unexpanded{#1}}%
-  \def\@tempb{\bgroup}%
-  \ifx\@tempa\@tempb
-    \endgroup
-    \collect@cell@addarg{#1}%
-  \else
-    \endgroup
-    \collect@cell@addarg{{#1}}%
-  \fi
-  \collect@cell@look
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\collect@cell@addarg}
-% Adds the given argument to the token list.
-%    \begin{macrocode}
-\def\collect@cell@addarg#1{%
-  \expandafter\expandafter\expandafter\collect@cell@toks
-  \expandafter\expandafter\expandafter
-  {\expandafter\the\expandafter\collect@cell@toks\collect@cell@spaces#1}%
-  \let\collect@cell@spaces\empty
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\collect@cell@addcc}
-% This macro is called when another |\collectcell| is found in the preamble
-% (at the moment also inside the cell). The argument of it is placed into the
-% token register and all following tokens are placed in an own token list which content
-% is then added with surrounding braces in the outer token list once the |\endcollectcell|
-% is found. TeX scoping mechanism is used for this so only one token register is required.
-%    \begin{macrocode}
-\def\collect@cell@addcc#1{%
-  \collect@cell@addarg{#1}%
-  \begingroup
-  \collect@cell@toks{}%
-  \collect@cell@look
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\collect@cell@checkcsname}
-% For support of |\end{tabularx}| without trailing |\\|.
-%    \begin{macrocode}
-\def\collect@cell@checkcsname#1\endcsname{%
-  \begingroup
-  \expandafter\ccell@swap\expandafter
-    {\expandafter,\@currenvir,endtabular,endtabular*,array,tabularx,}%
-    {\in@{,#1,}}%
-  \ifin@
-    \endgroup
-    \expandafter\@firstoftwo
-  \else
-    \endgroup
-    \expandafter\@secondoftwo
-  \fi
-    {\collect@cell@cr\tabularnewline\csname#1\endcsname}%
-    {\collect@cell@addarg{\csname#1\endcsname}\collect@cell@look}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\collect@cell@checkend}[1]{The argument of an \string\end~macro}
-% Reads the argument of |\end| and checks if it is identical to the current environment (|tabular|, |array|, |tabularx|, ...).
-% If so the collecting of token is ended, otherwise the |\end| and its argument are added to the 
-%    \begin{macrocode}
-\def\collect@cell@checkend#1{%
-  \begingroup
-  \def\@tempa{#1}%
-  \ifx\@tempa\@currenvir
-    \endgroup
-    \expandafter\@firstoftwo
-  \else
-    \endgroup
-    \expandafter\@secondoftwo
-  \fi
-    {\collect@cell@cr\tabularnewline\end{#1}}%
-    {\collect@cell@addarg{\end{#1}}\collect@cell@look}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\cc@iftoken}
-% Compares the |\collect@cell@lettoken| with the token given as argument.
-%    \begin{macrocode}
-\def\cc@iftoken#1{%
-  \ifx#1\collect@cell@lettoken
-    \expandafter\@firstoftwo
-  \else
-    \expandafter\@secondoftwo
-  \fi
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\cc@case}
-% Case statement over |\collect@cell@lettoken|.
-%    \begin{macrocode}
-\def\cc@case{%
-  \begingroup
-  \let\default= \collect@cell@lettoken
-  \cc@@case
-}
-\def\cc@@case#1{%
-  \ifx#1\collect@cell@lettoken
-    \expandafter\cc@@truecase
-  \else
-    \expandafter\cc@@falsecase
-  \fi
-}
-\def\cc@@truecase#1#2\endcc@case{\endgroup#1}
-\def\cc@@falsecase#1{\cc@@case}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\collcell@unskip}
-% Wrapper around |\unskip| to protect it from the eyes of the token scanner.
-% It is protected to avoid trouble if the user wrongly uses it at the beginning of the cell.
-% The macro is first defined using |\newcommand| to warn the user about name collisions.
-%    \begin{macrocode}
-\newcommand*\ccunskip{}
-\protected\def\ccunskip{\unskip}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\cci}
-% Protected empty macro usable to stop the expansion of tokens at the beginning of the
-% cell. It is ignored (gobbled) by the token scanner.
-% The macro is first defined using |\newcommand| to warn the user about name collisions.
-%    \begin{macrocode}
-\newcommand*\cci{}
-\protected\def\cci{}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\collect@cell@cr}
-% Redefines the table line/row end macro |\cr| so that 
-% token collection is restarted after the real |\cr| is expanded
-% and the end material defined by `<{}` is inserted.
-%
-% This redefinition must be done around some \emph{dirty tricks}
-% otherwise the |\cr| will be wrongly taken as end of the
-% row.
-%
-% Because the redefinition is done just at the end of a cell inside the group
-% opened by |collcell| it will only be locally.
-%    \begin{macrocode}
-\def\collect@cell@cr{%
-  \iffalse{\fi
-  \let\collcell@realcr\cr
-  \def\cr{%
-    \expandafter
-    \collect@cell@look
-    \collcell@realcr
-  }%
-  \iffalse}\fi
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\collect@cell@arg}
-% Handles the arguments.
-% The first token of the argument is still in the |lettoken| macro which is compared
-% against a list of possible end tokens.
-% Then either the cell end is handled or the argument is added to the token register
-% and the rest of the cell is processed.
-%    \begin{macrocode}
-\def\collect@cell@arg#1{%
-  \cc@case
-    \tabularnewline{\collect@cell@cr#1}%
-    \end{\collect@cell@checkend}%
-    \csname{\collect@cell@checkcsname}%
-    \unskip{%
-      \let\collect@cell@spaces\empty
-      %\collect@cell@addarg{#1}% do not include the \unskip
-      \collect@cell@look%
-    }%
-    \@sharp{%
-      \expandafter\collect@cell@addarg\expandafter{#1}%
-      \collect@cell@look
-    }%
-    \collectcell{%
-      \advance\collect@cell@count by \@ne
-      \collect@cell@addcc%
-    }%
-    \endcollectcell{%
-      \ifnum\collect@cell@count=\z@
-        \expandafter\collect@cell@end
-      \else
-        \expandafter\endgroup
-        \expandafter\collect@cell@addarg\expandafter
-        {\expandafter{\the\collect@cell@toks}}%
-        \advance\collect@cell@count by \m@ne%
-        \expandafter\collect@cell@look
-      \fi
-    }%
-    \cci{%
-      \collect@cell@look
-    }%
-    \default{%
-      \expandafter\ccell@swap\expandafter
-        {\csname endtabular*\endcsname\endtabular\endarray}{\in@{#1}}%
-      \ifin@
-          \expandafter\@firstoftwo
-      \else
-          \expandafter\@secondoftwo
-      \fi
-      {\collect@cell@cr\tabularnewline#1}%
-      {%
-        \collect@cell@addarg{#1}%
-        \collect@cell@look
-      }%
-    }%
- \endcc@case
-}
-%    \end{macrocode}
-% \end{macro}
-%
+% \iffalse
+%<@collcell.sty>
+% \fi
 %
 % \Finale
-% \iffalse
-%</package>
-% \fi
+% \endinput
 
