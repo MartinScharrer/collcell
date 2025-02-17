@@ -303,6 +303,10 @@
       %\collect@cell@addarg{#1}% do not include the \unskip
       \collect@cell@look%
     }%
+    \textonly@unskip{%
+      \let\collect@cell@spaces\empty
+      \collect@cell@look%
+    }%
     \@sharp{%
       \expandafter\collect@cell@addarg\expandafter{#1}%
       \collect@cell@look
