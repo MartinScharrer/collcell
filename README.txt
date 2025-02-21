@@ -1,6 +1,6 @@
 The collcell Package
 --------------------
-Copyright (c) 2009-2022-2022 by Martin Scharrer <martin.scharrer@web.de>
+Copyright (c) 2009-2025 by Martin Scharrer <martin.scharrer@web.de>
 CTAN: http://www.ctan.org/pkg/collcell/
 Code repository: https://github.com/MartinScharrer/collcell/
 
