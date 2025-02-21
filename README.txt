@@ -1,6 +1,7 @@
 The collcell Package
 --------------------
 Copyright (c) 2009-2025 by Martin Scharrer <martin.scharrer@web.de>
+License: LaTeX Project Public License, v1.3 or later: http://www.latex-project.org/lppl.txt
 CTAN: http://www.ctan.org/pkg/collcell/
 Code repository: https://github.com/MartinScharrer/collcell/
 
