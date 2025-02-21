@@ -278,7 +278,6 @@
   \iffalse{\fi
   \let\collcell@realcr\cr
   \def\cr{%
-    \expandafter
     \collect@cell@look
     \collcell@realcr
   }%
@@ -288,6 +287,8 @@
 % \end{macro}
 %
 % \begin{macro}{\collect@cell@arg}
+% \begin{macro}{\collect@cell@grab}
+% \begin{macro}{\l@collect@cell@env@cnt}
 % Handles the arguments.
 % The first token of the argument is still in the |lettoken| macro which is compared
 % against a list of possible end tokens.
@@ -296,12 +297,26 @@
 %    \begin{macrocode}
 \def\collect@cell@arg#1{%
   \cc@case
-    \tabularnewline{\collect@cell@cr#1}%
+    \tabularnewline{\ifnum\l@collect@cell@env@cnt=0 %
+        \expandafter\collect@cell@cr
+      \else
+        \expandafter\collect@cell@grab
+      \fi
+      #1%
+    }%
+    \begin{\advance\l@collect@cell@env@cnt by 1 %
+      \collect@cell@grab\begin}%
+    \end{\advance\l@collect@cell@env@cnt by -1 %
+      \collect@cell@checkend}%
     \end{\collect@cell@checkend}%
     \csname{\collect@cell@checkcsname}%
     \unskip{%
       \let\collect@cell@spaces\empty
       %\collect@cell@addarg{#1}% do not include the \unskip
+      \collect@cell@look%
+    }%
+    \textonly@unskip{%
+      \let\collect@cell@spaces\empty
       \collect@cell@look%
     }%
     \@sharp{%
@@ -342,6 +357,13 @@
     }%
  \endcc@case
 }
+\long\def\collect@cell@grab#1{%
+  \collect@cell@addarg{#1}%
+  \collect@cell@look
+}
+\newcount\l@collect@cell@env@cnt
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
 % \end{macro}
 %
